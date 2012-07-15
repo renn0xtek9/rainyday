@@ -16,7 +16,6 @@ namespace Ui {
     class MainWindow;
 }
 
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -27,9 +26,12 @@ public:
 public slots:
     void Copyplaylist();
     void Loadplaylist();
-    void Loaddir();
+    void Loaddir();		
+    void Sync_type_has_changed();
 private:
     Ui::MainWindow *ui;
+    sync_type get_Sync_type();
+
     void Setup_ui();
     void Load_icons();
     void Load_sounds();
@@ -44,6 +46,7 @@ private:
     QIcon *ICON_DIR;
     QDir *DEFAULT_PLAYLIST_DIR;
     QDir *DEFAULT_DEVICE_DIR;
+
 private slots:
     void Handle_error_signal();
     void Update_the_progressbar();

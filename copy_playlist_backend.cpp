@@ -18,6 +18,7 @@ copy_playlist_backend::copy_playlist_backend(){
   PLAYLIST_PATH=new QDir("");
   LAST_ERROR=new QString("");
   FILE_STREAM=0;
+  EMBED_M3U=TRUE;
 }
 copy_playlist_backend::~copy_playlist_backend(){
   delete DEVICE_PATH;
@@ -52,6 +53,9 @@ bool copy_playlist_backend::set_Sync_type(sync_type synchronization_type){
     Define_new_path();
   }
   return ((synchronization_type==keep_arch)||(synchronization_type==flat)||(synchronization_type==one_folder_per_playlist));
+}
+void copy_playlist_backend::set_Embed_m3u_file(bool embed){
+  EMBED_M3U=embed;
 }
 QStringList copy_playlist_backend::get_Song_list(){
   QStringList songsname_list;
@@ -153,6 +157,9 @@ bool copy_playlist_backend::Sync_the_playlist(){
       PROGRESS=i+1;
       emit Progress_changed();
     }
+    if (EMBED_M3U){			//Write a embeded m3u file if needed
+      Define_new_m3u();
+    }
     SUCCESS=true;			//TODO CHECK THIS !
   }
   return SUCCESS;
@@ -193,19 +200,21 @@ bool copy_playlist_backend::Define_new_m3u(){
   QString path_buff(DEVICE_PATH->path());
   path_buff.append("/");
   path_buff.append(get_Playlist_name());
-  path_buff.append("m3u");
+  path_buff.append(".m3u");
   QDir dir_buffer(path_buff);
   dir_buffer.setPath(QDir::cleanPath(dir_buffer.path()));
   QFile new_m3u(dir_buffer.absolutePath());
   if (new_m3u.open(QFile::WriteOnly | QFile::Truncate)){
+    qDebug()<<"the new m3u file is open and created";
     QTextStream streambuffer(& new_m3u);
     streambuffer.readAll();
     streambuffer <<"#EXTM3U";
     endl(streambuffer);
     QDir dir_buffer(*DEVICE_PATH);
     for(int i=0;i<NEW_SONG_PATH.size();i++){
-      dir_buffer=NEW_SONG_PATH.at(i);
-      if (Go_to_the_song_position(&dir_buffer)){
+      dir_buffer=NEW_SONG_PATH.at(i);      
+      if (Go_to_the_device_path_position()){
+	qDebug()<<"We are supposed to be at the song position"<<QDir::currentPath();
       streambuffer<<"#EXTINF";
       endl(streambuffer);
       streambuffer<<Build_a_relative_path_from_here(DEVICE_PATH,&dir_buffer);
@@ -364,6 +373,10 @@ bool copy_playlist_backend::Open_local_playlist_file(){
     FILE_STREAM=streambuffer;		//WARNING same thing here
   }
   return Filebuffer->isOpen();
+}
+bool copy_playlist_backend::Go_to_the_device_path_position(){
+  QDir dir_buffer(*DEVICE_PATH);
+  return QDir::setCurrent(dir_buffer.path());;
 }
 bool copy_playlist_backend::Go_to_playlist_path_position(){
   QDir dir_buffer(*PLAYLIST_PATH);

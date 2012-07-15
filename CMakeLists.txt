@@ -21,7 +21,7 @@ INCLUDE_DIRECTORIES(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ) #Directories fo
 SET(QPlaylisTransfer_SOURCES copy_playlist_backend.cpp main.cpp mainwindow.cpp) # collect the sources of the project and call the collected set  "project_name_SRCS"
 SET(QPlaylisTransfer_HEADERS copy_playlist_backend.h mainwindow.h ui_mainwindow.h)
 SET(QPlaylisTransfer_FORMS mainwindow.ui)
-SET(QPlaylisTransfer_RESSOURCES)
+SET(QPlaylisTransfer_RESSOURCES clic.wav dir.png copy.png playlist.png)
 ### Final part
 QT4_WRAP_CPP(QPlaylisTransfer_HEADERS_MOC ${QPlaylisTransfer_HEADERS})
 QT4_WRAP_UI(QPlaylisTransfer_FORMS_HEADERS ${QPlaylisTransfer_FORMS})

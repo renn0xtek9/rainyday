@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Sat 9. Oct 12:07:39 2010
-**      by: Qt User Interface Compiler version 4.7.0
+** Created: Sun Jul 15 17:49:04 2012
+**      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -15,6 +15,7 @@
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QCheckBox>
+#include <QtGui/QComboBox>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
 #include <QtGui/QListWidget>
@@ -39,8 +40,10 @@ public:
     QLabel *dir_name;
     QLabel *trcknb;
     QListWidget *songslistview;
-    QCheckBox *sub_dir_box;
     QProgressBar *copy_progressbar;
+    QComboBox *sync_type_box;
+    QListWidget *dirlist_view;
+    QCheckBox *Embed_m3u_box;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -49,6 +52,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
+        MainWindow->resize(430, 500);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         button_playlist = new QPushButton(centralWidget);
@@ -71,18 +75,25 @@ public:
         trcknb->setGeometry(QRect(20, 140, 511, 16));
         songslistview = new QListWidget(centralWidget);
         songslistview->setObjectName(QString::fromUtf8("songslistview"));
-        songslistview->setGeometry(QRect(20, 170, 521, 221));
-        sub_dir_box = new QCheckBox(centralWidget);
-        sub_dir_box->setObjectName(QString::fromUtf8("sub_dir_box"));
-        sub_dir_box->setGeometry(QRect(120, 110, 161, 17));
+        songslistview->setGeometry(QRect(10, 160, 200, 220));
         copy_progressbar = new QProgressBar(centralWidget);
         copy_progressbar->setObjectName(QString::fromUtf8("copy_progressbar"));
-        copy_progressbar->setGeometry(QRect(20, 400, 511, 23));
+        copy_progressbar->setGeometry(QRect(10, 400, 410, 23));
         copy_progressbar->setValue(24);
+        sync_type_box = new QComboBox(centralWidget);
+        sync_type_box->setObjectName(QString::fromUtf8("sync_type_box"));
+        sync_type_box->setGeometry(QRect(110, 110, 200, 22));
+        dirlist_view = new QListWidget(centralWidget);
+        dirlist_view->setObjectName(QString::fromUtf8("dirlist_view"));
+        dirlist_view->setGeometry(QRect(220, 160, 200, 220));
+        Embed_m3u_box = new QCheckBox(centralWidget);
+        Embed_m3u_box->setObjectName(QString::fromUtf8("Embed_m3u_box"));
+        Embed_m3u_box->setGeometry(QRect(130, 60, 120, 21));
+        Embed_m3u_box->setChecked(true);
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 551, 21));
+        menuBar->setGeometry(QRect(0, 0, 430, 19));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -105,7 +116,7 @@ public:
         playlist_name->setText(QApplication::translate("MainWindow", "TextLabel", 0, QApplication::UnicodeUTF8));
         dir_name->setText(QApplication::translate("MainWindow", "TextLabel", 0, QApplication::UnicodeUTF8));
         trcknb->setText(QApplication::translate("MainWindow", "TextLabel", 0, QApplication::UnicodeUTF8));
-        sub_dir_box->setText(QApplication::translate("MainWindow", "Create it own subdirectory", 0, QApplication::UnicodeUTF8));
+        Embed_m3u_box->setText(QApplication::translate("MainWindow", "Embed m3u file ?", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };
