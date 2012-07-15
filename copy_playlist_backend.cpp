@@ -62,7 +62,6 @@ QStringList copy_playlist_backend::get_Song_list(){
 QString copy_playlist_backend::get_Last_Error(){
   return *LAST_ERROR;
 }
-
 QString copy_playlist_backend::get_Playlist_name(){
   QString name("");
   if(is_Playlist_path_valid())
@@ -86,6 +85,7 @@ int copy_playlist_backend::get_Progress(){
 }
 bool copy_playlist_backend::Load_playlist(){
   PLAYLIST_LOADED_FLAG=false;
+  NEW_PATH_UPTODATE_FLAG=false;
   if (is_Playlist_path_valid()){
     List_all_files();
   }
@@ -93,6 +93,7 @@ bool copy_playlist_backend::Load_playlist(){
 }
 bool copy_playlist_backend::Load_playlist(QString playlist_path){
   PLAYLIST_LOADED_FLAG=false;
+  NEW_PATH_UPTODATE_FLAG=false;
   set_Playlist_path(playlist_path);
     if (is_Playlist_path_valid()){
     List_all_files();
@@ -100,12 +101,13 @@ bool copy_playlist_backend::Load_playlist(QString playlist_path){
   return PLAYLIST_LOADED_FLAG;  
 }
 bool copy_playlist_backend::Define_new_path(){  
-  if ((is_Device_path_valid()&&PLAYLIST_LOADED_FLAG)&&(!DEVICE_PATH->path().isEmpty())){
+  if ((is_Device_path_valid()&&PLAYLIST_LOADED_FLAG)){
     NEW_SONG_PATH.clear();
     if(Go_to_playlist_path_position()){
       QDir dir_buffer("");
       for (int i=0;i<SONG_PATH_LIST.size();i++){
-//	NEW_SONG_PATH.append(Build_a_new_path(DEVICE_PATH, SONG_PATH_LIST.at(i)));
+	dir_buffer=SONG_PATH_LIST.at(i);
+	NEW_SONG_PATH.append(Build_a_new_path(DEVICE_PATH, & dir_buffer));
       }
        NEW_PATH_UPTODATE_FLAG=0;     
     }    
@@ -126,6 +128,7 @@ bool copy_playlist_backend::Sync_the_playlist(){
 }
 bool copy_playlist_backend::List_all_files(){
   PLAYLIST_LOADED_FLAG=false;
+  SONG_PATH_LIST.clear();
   if(Autodetect_playlist_type()){
   switch(PLAYLIST_TYPE){
     case (m3u):{
@@ -155,7 +158,40 @@ bool copy_playlist_backend::List_all_files(){
   return PLAYLIST_LOADED_FLAG;
 }
 bool copy_playlist_backend::Define_new_m3u(){
-  ; //TODO IMPLEMENT THE CREATION OF A NEW M3U FILE 
+  QString path_buff(DEVICE_PATH->path());
+  path_buff.append("/");
+  path_buff.append(get_Playlist_name());
+  path_buff.append("m3u");
+  QDir dir_buffer(path_buff);
+  dir_buffer.setPath(QDir::cleanPath(dir_buffer.path()));
+  QFile new_m3u(dir_buffer.absolutePath());
+  if (new_m3u.open(QFile::WriteOnly | QFile::Truncate)){
+    QTextStream streambuffer(& new_m3u);
+    streambuffer.readAll();
+    streambuffer <<"#EXTM3U";
+    endl(streambuffer);
+    QDir dir_buffer(*DEVICE_PATH);
+    for(int i=0;i<NEW_SONG_PATH.size();i++){
+      dir_buffer=NEW_SONG_PATH.at(i);
+      if (Go_to_the_song_position(&dir_buffer)){
+      streambuffer<<"#EXTINF";
+      endl(streambuffer);
+      streambuffer<<Build_a_relative_path_from_here(DEVICE_PATH,&dir_buffer);
+      endl(streambuffer);
+      }
+      else{
+	LAST_ERROR->clear();
+	LAST_ERROR->append("Impossible to place the current working dir to:");
+	LAST_ERROR->append(dir_buffer.path());
+	LAST_ERROR->append("the song won't be part of the playlist");
+	emit Error_raised();
+      }
+    }
+    streambuffer.flush();
+    new_m3u.close();
+  }  
+  
+  
 }
 bool copy_playlist_backend::Autodetect_playlist_type(){
   bool autodetected=false;
@@ -232,7 +268,6 @@ bool copy_playlist_backend::is_Valid_song_path(QDir song_path){
   QFileInfo finfobuffer(song_path,song_path.path());
   return (finfobuffer.exists()&&finfobuffer.isFile());
 }
-
 bool copy_playlist_backend::List_all_files_from_m3u(){
   bool result=false;
   if(Open_local_playlist_file()){
@@ -240,7 +275,7 @@ bool copy_playlist_backend::List_all_files_from_m3u(){
     QDir dir_buffer(QDir::current());
     while(FILE_STREAM->atEnd()==FALSE){
       dir_buffer.setPath(Get_the_following_record());
-      if (is_Valid_song_path(QDir songdir)){
+      if (is_Valid_song_path(dir_buffer)){
 	SONG_PATH_LIST.append(dir_buffer);
       }
       else{
@@ -288,6 +323,13 @@ bool copy_playlist_backend::Go_to_playlist_path_position(){
   dir_buffer.cdUp();
   return QDir::setCurrent(dir_buffer.path());
 }
+bool copy_playlist_backend::Go_to_the_song_position(QDir* song_path)
+{
+  QDir dir_buffer(*song_path);
+  dir_buffer.cdUp();
+  return QDir::setCurrent(dir_buffer.path());
+}
+
 QString copy_playlist_backend::Get_the_following_record(){
   switch (PLAYLIST_TYPE){
     case(m3u):{
@@ -326,29 +368,10 @@ QDir copy_playlist_backend::Build_a_new_path(QDir* device_path, QDir* song_path 
   switch(SYNC_TYPE){
     case(keep_arch):{
         Go_to_playlist_path_position();
-	QFileInfo finfobuffer(*song_path,song_path->path());
-	QStringList end_of_path(finfobuffer.fileName());  
-	QDir song_path_buff=*song_path;
-	song_path_buff.cdUp();	//places us on the paent dir of the file 
-	while ((song_path_buff!=QDir::current())&&(song_path_buff.absolutePath()!=QDir::rootPath())){
-	  end_of_path.prepend("/");
-	  end_of_path.prepend(song_path_buff.dirName());
-	  song_path_buff.cdUp();
-	}
-	end_of_path.prepend("/");
-	end_of_path.prepend(device_path->absolutePath());
-	if ((song_path_buff.path()==QDir::rootPath())&&(song_path_buff!=QDir::current())){
-	  LAST_ERROR->clear();
-	  LAST_ERROR->append("Error when building the new song path for");
-	  LAST_ERROR->append(song_path->path());
-	  LAST_ERROR->append("the root path has been reached without meeting the playlist");
-	  emit Error_raised();
-	}
-	else{
-	  QString full_path("");full_path.clear();
-	  for (int i=0;i<end_of_path.size();i++){
-	    full_path.append(end_of_path.at(i));
-	  }
+	QString full_path(Build_a_relative_path_from_here(device_path,song_path));
+	if (!full_path.isEmpty()){
+	  full_path.prepend("/");
+	  full_path.prepend(device_path->absolutePath());
 	  dir_buffer.setPath(full_path);
 	}
       break;
@@ -374,7 +397,34 @@ QDir copy_playlist_backend::Build_a_new_path(QDir* device_path, QDir* song_path 
   }
   return dir_buffer;  
 }
-
+QString copy_playlist_backend::Build_a_relative_path_from_here(QDir* device_path,QDir* song_path){
+	QString result;
+	QFileInfo finfobuffer(*song_path,song_path->path());
+	QStringList end_of_path(finfobuffer.fileName());  
+	QDir song_path_buff=*song_path;
+	song_path_buff.cdUp();	//places us on the paent dir of the file 
+	while ((song_path_buff!=QDir::current())&&(song_path_buff.absolutePath()!=QDir::rootPath())){
+	  end_of_path.prepend("/");
+	  end_of_path.prepend(song_path_buff.dirName());
+	  song_path_buff.cdUp();
+	}
+	if ((song_path_buff.path()==QDir::rootPath())&&(song_path_buff!=QDir::current())){
+	  LAST_ERROR->clear();
+	  LAST_ERROR->append("Error when a relative path for");
+	  LAST_ERROR->append(song_path->path());
+	  LAST_ERROR->append("from:");
+	  LAST_ERROR->append(QDir::currentPath());
+	  LAST_ERROR->append("the root path has been reached without meeting the current path");
+	  emit Error_raised();
+	  QString.clear();
+	}
+	else{
+	  for (int i=0;i<end_of_path.size();i++){
+	    result.append(end_of_path.at(i));
+	  }
+	}
+	return result;
+}
 
 
 
