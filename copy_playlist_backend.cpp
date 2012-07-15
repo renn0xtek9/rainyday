@@ -48,6 +48,9 @@ bool copy_playlist_backend::set_Playlist_path(QDir playlist_path){
 }
 bool copy_playlist_backend::set_Sync_type(sync_type synchronization_type){
   SYNC_TYPE=synchronization_type;
+  if (PLAYLIST_LOADED_FLAG){ //if a playlist is already loaded then update the new path according to the new sync strategy
+    Define_new_path();
+  }
   return ((synchronization_type==keep_arch)||(synchronization_type==flat)||(synchronization_type==one_folder_per_playlist));
 }
 QStringList copy_playlist_backend::get_Song_list(){
@@ -58,6 +61,15 @@ QStringList copy_playlist_backend::get_Song_list(){
     }
   }
   return songsname_list;
+}
+QStringList copy_playlist_backend::get_New_path_list(){
+  QStringList dirname_list;
+  if (NEW_PATH_UPTODATE_FLAG){
+    for (int i=0;i<NEW_SONG_PATH.size();i++){   
+      dirname_list.append(NEW_SONG_PATH.at(i).absolutePath());
+    }
+  }
+  return dirname_list;;
 }
 QString copy_playlist_backend::get_Last_Error(){
   return *LAST_ERROR;
@@ -73,6 +85,12 @@ QString copy_playlist_backend::get_Playlist_name(){
       //TODO implement geting the playlist name in case of an amarok internal db playlist
     }   
     return name;
+}
+QString copy_playlist_backend::get_Full_dir_name(){
+  return DEVICE_PATH->absolutePath();
+}
+QString copy_playlist_backend::get_Dir_name(){
+  return DEVICE_PATH->dirName();
 }
 int copy_playlist_backend::get_Numbers_of_track(){
    return NEW_SONG_PATH.size();
@@ -98,16 +116,20 @@ bool copy_playlist_backend::Load_playlist(QString playlist_path){
   qDebug()<<PLAYLIST_LOADED_FLAG;
   return PLAYLIST_LOADED_FLAG;  
 }
-bool copy_playlist_backend::Define_new_path(){  
+bool copy_playlist_backend::Define_new_path(){ 
+  NEW_PATH_UPTODATE_FLAG=false;
+  NEW_SONG_PATH.clear();
+  qDebug()<<"enter define new path";
   if ((is_Device_path_valid()&&PLAYLIST_LOADED_FLAG)){
-    NEW_SONG_PATH.clear();
+
     if(Go_to_playlist_path_position()){
+      qDebug()<<"We are at the playlist position";
       QDir dir_buffer("");
       for (int i=0;i<SONG_PATH_LIST.size();i++){
 	dir_buffer=SONG_PATH_LIST.at(i);
 	NEW_SONG_PATH.append(Build_a_new_path(DEVICE_PATH, & dir_buffer));
       }
-       NEW_PATH_UPTODATE_FLAG=0;     
+       NEW_PATH_UPTODATE_FLAG=true;     
     }    
   }
   return NEW_PATH_UPTODATE_FLAG;
@@ -115,9 +137,20 @@ bool copy_playlist_backend::Define_new_path(){
 bool copy_playlist_backend::Sync_the_playlist(){
   bool SUCCESS=false;
   if(PLAYLIST_LOADED_FLAG && NEW_PATH_UPTODATE_FLAG){
+    QDir dir_buffer;
+    QString path_buff;
+    int pos_last_separator;
     for (int i=0;i<NEW_SONG_PATH.size();i++){
-      QFile::copy(SONG_PATH_LIST.at(i).path(),NEW_SONG_PATH.at(i).path());
-      PROGRESS=i;
+      path_buff=NEW_SONG_PATH.at(i).absolutePath();
+      pos_last_separator=path_buff.lastIndexOf("/");
+      dir_buffer.setPath(path_buff.left(pos_last_separator));
+      qDebug()<<"Song nb"<<i<<"gonna be copied";
+      qDebug()<<"The song path is"<<SONG_PATH_LIST.at(i).path();
+      qDebug()<<"The new path is"<<NEW_SONG_PATH.at(i).path(); 
+      qDebug()<<"The dir_buffer is"<<dir_buffer.path();
+      qDebug()<<dir_buffer.mkpath(dir_buffer.absolutePath());
+      qDebug()<<QFile::copy(SONG_PATH_LIST.at(i).path(),NEW_SONG_PATH.at(i).path());
+      PROGRESS=i+1;
       emit Progress_changed();
     }
     SUCCESS=true;			//TODO CHECK THIS !
@@ -156,6 +189,7 @@ bool copy_playlist_backend::List_all_files(){
   return PLAYLIST_LOADED_FLAG;
 }
 bool copy_playlist_backend::Define_new_m3u(){
+  bool result=true;
   QString path_buff(DEVICE_PATH->path());
   path_buff.append("/");
   path_buff.append(get_Playlist_name());
@@ -183,12 +217,13 @@ bool copy_playlist_backend::Define_new_m3u(){
 	LAST_ERROR->append(dir_buffer.path());
 	LAST_ERROR->append("the song won't be part of the playlist");
 	emit Error_raised();
+    result=false;
       }
     }
     streambuffer.flush();
     new_m3u.close();
   }  
-  
+  return result;
   
 }
 bool copy_playlist_backend::Autodetect_playlist_type(){
@@ -341,9 +376,9 @@ bool copy_playlist_backend::Go_to_the_song_position(QDir* song_path){
   return QDir::setCurrent(dir_buffer.path());
 }
 QString copy_playlist_backend::Get_the_following_record(){
-  switch (PLAYLIST_TYPE){
+ QString line_buf("");
+    switch (PLAYLIST_TYPE){
     case(m3u):{
-      QString line_buf(""); 
       bool record_flag=false;
       while ((!record_flag)&&(FILE_STREAM->atEnd()==FALSE))             // as long as we dont reach the end of the playlist file
 	    {
@@ -354,7 +389,6 @@ QString copy_playlist_backend::Get_the_following_record(){
 		  line_buf=FILE_STREAM->readLine(2048); //the path is located on the line under #EXTINF
 		}
 	    }
-	    return line_buf;
       break;
     }
     case(xspf):{
@@ -370,6 +404,7 @@ QString copy_playlist_backend::Get_the_following_record(){
       break;
     }
    }
+  return line_buf;
 }
 QString copy_playlist_backend::Get_name_of_file_from_path(QDir* dir){
   QString name;
