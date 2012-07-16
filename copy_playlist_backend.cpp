@@ -361,9 +361,6 @@ bool copy_playlist_backend::List_all_files_from_amarok_db(){
   bool result=false;
   return result;
 }
-
-
-
 bool copy_playlist_backend::Open_local_playlist_file(){
   QFile* Filebuffer=new QFile(PLAYLIST_PATH->path());
   Filebuffer->open(QIODevice::ReadOnly);
@@ -422,7 +419,7 @@ QString copy_playlist_backend::Get_the_following_record(){
 QString copy_playlist_backend::Get_name_of_file_from_path(QDir* dir){
   QString name;
   QFileInfo finfobuffer(*dir,dir->path());
-  int pos_of_point=finfobuffer.fileName().indexOf(".");
+  int pos_of_point=finfobuffer.fileName().lastIndexOf(".");
   name=finfobuffer.fileName().left(pos_of_point);
   return name;
 }
@@ -482,6 +479,5 @@ QString copy_playlist_backend::Build_a_relative_path_from_here(QDir* device_path
   }
   return result;
 }
-
 
 
