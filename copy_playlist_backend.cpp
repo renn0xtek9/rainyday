@@ -24,6 +24,7 @@ copy_playlist_backend::~copy_playlist_backend(){
   delete DEVICE_PATH;
   delete PLAYLIST_PATH;
   delete PLAYLIST_FILE;
+  //TODO DELETE the other objects
 }
 bool copy_playlist_backend::set_Device_path(QString device_path){
   DEVICE_PATH->setPath(device_path);
@@ -207,7 +208,7 @@ bool copy_playlist_backend::Define_new_m3u(){
   if (new_m3u.open(QFile::WriteOnly | QFile::Truncate)){
     qDebug()<<"the new m3u file is open and created";
     QTextStream streambuffer(& new_m3u);
-    streambuffer.readAll();
+    streambuffer.readAll(); // TODO Do We need it ?
     streambuffer <<"#EXTM3U";
     endl(streambuffer);
     QDir dir_buffer(*DEVICE_PATH);

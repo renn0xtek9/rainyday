@@ -21,11 +21,11 @@ INCLUDE_DIRECTORIES(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ) #Directories fo
 SET(QPlaylisTransfer_SOURCES copy_playlist_backend.cpp main.cpp mainwindow.cpp) # collect the sources of the project and call the collected set  "project_name_SRCS"
 SET(QPlaylisTransfer_HEADERS copy_playlist_backend.h mainwindow.h ui_mainwindow.h)
 SET(QPlaylisTransfer_FORMS mainwindow.ui)
-SET(QPlaylisTransfer_RESSOURCES clic.wav dir.png copy.png playlist.png)
+SET(QPlaylisTransfer_RCCS playlist_ressource.qrc)
 ### Final part
 QT4_WRAP_CPP(QPlaylisTransfer_HEADERS_MOC ${QPlaylisTransfer_HEADERS})
 QT4_WRAP_UI(QPlaylisTransfer_FORMS_HEADERS ${QPlaylisTransfer_FORMS})
-QT4_ADD_RESOURCES(QPlaylisTransfer_RESOURCES_RCC ${QPlaylisTransfer_RESOURCES})
+QT4_ADD_RESOURCES(QPlaylisTransfer_RCC_SRCS ${QPlaylisTransfer_RCCS})
 INCLUDE(${QT_USE_FILE})
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 LINK_DIRECTORIES(/home/max/Documents/C/Library/lib/) # Directories for the compiled library (.so and .a) added by command: link_directories(/path/to/,sofiles/)
@@ -34,6 +34,6 @@ LINK_DIRECTORIES(/home/max/Documents/C/Library/lib/) # Directories for the compi
 
 #IF QT UN-COMMENT THE FOLLOWING LINE
 qt4_automoc(${QPlaylisTransfer_SOURCES}) #don't know what it does but I think it is kind of better when it is there
-add_executable(QPlaylisTransfer ${QPlaylisTransfer_SOURCES} ${QPlaylisTransfer_HEADERS_MOC}) #tell cmake to create the executable "project_nam" based on the sources collected in "project_name_SRCS
+add_executable(QPlaylisTransfer ${QPlaylisTransfer_SOURCES} ${QPlaylisTransfer_HEADERS_MOC} ${QPlaylisTransfer_RCC_SRCS}) #tell cmake to create the executable "project_nam" based on the sources collected in "project_name_SRCS
 target_link_libraries(QPlaylisTransfer ${QT_LIBRARIES}) #link the program with the library with target_link_libraries(/path/to/lib.so)
 #Do always give the full path for all of your .so files

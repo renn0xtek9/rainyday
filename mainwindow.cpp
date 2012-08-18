@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include <QDebug>
 #include <QLabel>
 #include <QMainWindow>
 #include <QString>
@@ -17,19 +17,25 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow){    
     ui->setupUi(this);
-    Load_icons();
     Load_sounds();
     Setup_ui();    
     ERRMSG=new QErrorMessage(this);
     CP_BCK=new copy_playlist_backend;
     DEFAULT_PLAYLIST_DIR=new QDir(QDir::home());
     DEFAULT_DEVICE_DIR=new QDir(QDir::root());
+    FILE_DIALOG_PLAYLIST=new QFileDialog(this,"Open a playlist",DEFAULT_PLAYLIST_DIR->path(),"all/allfiles");
+    FILE_DIALOG_PLAYLIST->setNameFilter("All playlist files (*.m3u *.xspf *wpl)");
+    FILE_DIALOG_DIR=new QFileDialog(this,"Select a directory",DEFAULT_DEVICE_DIR->path(),"all/allfiles");
+    FILE_DIALOG_DIR->setFilter(QDir::AllDirs);
+    FILE_DIALOG_DIR->setFileMode(QFileDialog::Directory);
     //Initial conditions
     CP_BCK->set_Sync_type(get_Sync_type());
     //Connections
     QObject::connect(ui->button_copy,SIGNAL(clicked()),this,SLOT(Copyplaylist()));
-    QObject::connect(ui->button_playlist,SIGNAL(clicked()),this,SLOT(Loadplaylist()));
-    QObject::connect(ui->button_dir,SIGNAL(clicked()),this,SLOT(Loaddir()));    
+    QObject::connect(ui->button_playlist,SIGNAL(clicked()),this,SLOT(Launch_playlist_file_dialog()));
+    QObject::connect(ui->button_dir,SIGNAL(clicked()),this,SLOT(Launch_dir_file_dialog()));   
+    QObject::connect(FILE_DIALOG_PLAYLIST,SIGNAL(fileSelected(QString)),this,SLOT(Loadplaylist(QString)));
+    QObject::connect(FILE_DIALOG_DIR,SIGNAL(fileSelected(QString)),this,SLOT(Loaddir(QString)));
     QObject::connect(CP_BCK,SIGNAL(Error_raised()),this,SLOT(Handle_error_signal()));
     QObject::connect(CP_BCK,SIGNAL(Progress_changed()),this,SLOT(Update_the_progressbar()));
     QObject::connect(ui->sync_type_box,SIGNAL(currentIndexChanged(int)),this,SLOT(Sync_type_has_changed()));
@@ -45,10 +51,9 @@ void MainWindow::Copyplaylist(){           //copy the content of the playlist to
     CP_BCK->Sync_the_playlist();
     //TODO add a song for when it's done 
 }
-void MainWindow::Loadplaylist(){
-  ui->songslistview->clear();
-  CLIC->play();
-  CP_BCK->Load_playlist(QFileDialog::getOpenFileName(this,"Open playlist",DEFAULT_PLAYLIST_DIR->path(),"Playlist (*m3u)")); 
+void MainWindow::Loadplaylist(QString playlist_path){
+  ui->songslistview->clear();  
+  CP_BCK->Load_playlist(playlist_path); 
   ui->songslistview->addItems(CP_BCK->get_Song_list());
   ui->playlist_name->setText(CP_BCK->get_Playlist_name());
   ui->trcknb->setNum(CP_BCK->get_Numbers_of_track());  
@@ -58,10 +63,8 @@ void MainWindow::Sync_type_has_changed(){
   CP_BCK->set_Sync_type(get_Sync_type());
   ui->dirlist_view->addItems(CP_BCK->get_New_path_list());
 }
-
-void MainWindow::Loaddir(){
-  CLIC->play();
-  CP_BCK->set_Device_path(QFileDialog::getExistingDirectory(this,"Select the device path",DEFAULT_DEVICE_DIR->path(),QFileDialog::ShowDirsOnly));
+void MainWindow::Loaddir(QString dir_path){
+  CP_BCK->set_Device_path(dir_path);
   CP_BCK->Define_new_path();
   ui->dir_name->setText(CP_BCK->get_Full_dir_name());
   ui->dirlist_view->addItems(CP_BCK->get_New_path_list());
@@ -86,21 +89,20 @@ void MainWindow::Setup_ui(){
     ui->sync_type_box->setFixedWidth(200);
 }
 void MainWindow::Load_icons(){
-  ICON =new QIcon("icon.ico");
-  ICON_COPY=new QIcon("copy.png");
-  ICON_PLAYLIST=new QIcon("playlist.png");
-  ICON_DIR=new QIcon("dir.png");
+  ICON =new QIcon(":rainyday_64.png");
+  ICON_COPY=new QIcon(":copy.png");
+  ICON_PLAYLIST=new QIcon(":playlist.png");
+  qDebug()<<"ICON PLAYLIST INVALID?"<<ICON_PLAYLIST->isNull();
+  ICON_DIR=new QIcon(":dir.png");
 }
 void MainWindow::Load_sounds(){
-  CLIC=new QSound("clic.wav");
-  COPYSOUND=new QSound("copy.wav");
+  CLIC=new QSound(":clic.wav");
+  COPYSOUND=new QSound(":copy.wav");
 }
 void MainWindow::Update_the_progressbar(){
   ui->copy_progressbar->setMaximum(CP_BCK->get_Numbers_of_track());
   ui->copy_progressbar->setValue(CP_BCK->get_Progress());
-
 }
-
 void MainWindow::Handle_error_signal(){
   ERRMSG->showMessage(CP_BCK->get_Last_Error());
 }
@@ -120,6 +122,14 @@ sync_type MainWindow::get_Sync_type(){
     }
   }
   return result;
+}
+void MainWindow::Launch_dir_file_dialog(){
+  CLIC->play();
+  FILE_DIALOG_DIR->show();
+}
+void MainWindow::Launch_playlist_file_dialog(){
+  CLIC->play(); 
+  FILE_DIALOG_PLAYLIST->show();
 }
 
 
