@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <QErrorMessage>
 #include <QSound>
+#include <QMessageBox>
 #include "copy_playlist_backend.h"
 
 
@@ -21,6 +22,11 @@ MainWindow::MainWindow(QWidget *parent) :
     Setup_ui();    
     ERRMSG=new QErrorMessage(this);
     CP_BCK=new copy_playlist_backend;
+    DIALOG_COPY_ENDED=new QMessageBox;
+    DIALOG_COPY_ENDED->setWindowIcon(*ICON);
+    DIALOG_COPY_ENDED->setIcon(QMessageBox::Information);
+    DIALOG_COPY_ENDED->setText("Copy operation is finished");
+    OK_BUTTON=DIALOG_COPY_ENDED->addButton("Ok",QMessageBox::AcceptRole);
     DEFAULT_PLAYLIST_DIR=new QDir(QDir::home());
     DEFAULT_DEVICE_DIR=new QDir(QDir::root());
     FILE_DIALOG_PLAYLIST=new QFileDialog(this,"Open a playlist",DEFAULT_PLAYLIST_DIR->path(),"all/allfiles");
@@ -39,7 +45,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(CP_BCK,SIGNAL(Error_raised()),this,SLOT(Handle_error_signal()));
     QObject::connect(CP_BCK,SIGNAL(Progress_changed()),this,SLOT(Update_the_progressbar()));
     QObject::connect(ui->sync_type_box,SIGNAL(currentIndexChanged(int)),this,SLOT(Sync_type_has_changed()));
-}
+    QObject::connect(CP_BCK,SIGNAL(Copy_operation_ended()),DIALOG_COPY_ENDED,SLOT(show()));
+    QObject::connect(OK_BUTTON,SIGNAL(clicked(bool)),CP_BCK,SLOT(Roger_the_notification_of_end_of_operation()));
+    QObject::connect(CP_BCK,SIGNAL(A_new_playlist_is_loaded()),this,SLOT(Retrieve_playlist_song()));
+    QObject::connect(CP_BCK,SIGNAL(The_dir_is_uptodate()),this,SLOT(Retrieve_new_path()));
+    }
 MainWindow::~MainWindow(){
     delete ui;
     //TODO DELETE AND DESTRUCT OTHER OBJECT
@@ -52,22 +62,25 @@ void MainWindow::Copyplaylist(){           //copy the content of the playlist to
     //TODO add a song for when it's done 
 }
 void MainWindow::Loadplaylist(QString playlist_path){
-  ui->songslistview->clear();  
   CP_BCK->Load_playlist(playlist_path); 
+}
+void MainWindow::Retrieve_playlist_song(){
+  ui->songslistview->clear();
   ui->songslistview->addItems(CP_BCK->get_Song_list());
   ui->playlist_name->setText(CP_BCK->get_Playlist_name());
   ui->trcknb->setNum(CP_BCK->get_Numbers_of_track());  
 }
-void MainWindow::Sync_type_has_changed(){
+void MainWindow::Retrieve_new_path(){
   ui->dirlist_view->clear();
-  CP_BCK->set_Sync_type(get_Sync_type());
+  ui->dir_name->setText(CP_BCK->get_Full_dir_name());
   ui->dirlist_view->addItems(CP_BCK->get_New_path_list());
+}
+void MainWindow::Sync_type_has_changed(){  
+  CP_BCK->set_Sync_type(get_Sync_type());
 }
 void MainWindow::Loaddir(QString dir_path){
   CP_BCK->set_Device_path(dir_path);
   CP_BCK->Define_new_path();
-  ui->dir_name->setText(CP_BCK->get_Full_dir_name());
-  ui->dirlist_view->addItems(CP_BCK->get_New_path_list());
 }
 void MainWindow::Setup_ui(){
     Load_icons();
@@ -100,7 +113,12 @@ void MainWindow::Load_sounds(){
   COPYSOUND=new QSound(":copy.wav");
 }
 void MainWindow::Update_the_progressbar(){
+  if (CP_BCK->get_Numbers_of_track()>1){
   ui->copy_progressbar->setMaximum(CP_BCK->get_Numbers_of_track());
+  }
+  else {
+    ui->copy_progressbar->setMaximum(1);  //at least 1 as max of the progressbar so that it remains 0% when no song loaded
+  }
   ui->copy_progressbar->setValue(CP_BCK->get_Progress());
 }
 void MainWindow::Handle_error_signal(){

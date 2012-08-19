@@ -19,6 +19,7 @@ copy_playlist_backend::copy_playlist_backend(){
   LAST_ERROR=new QString("");
   FILE_STREAM=0;
   EMBED_M3U=TRUE;
+  
 }
 copy_playlist_backend::~copy_playlist_backend(){
   delete DEVICE_PATH;
@@ -103,23 +104,27 @@ int copy_playlist_backend::get_Numbers_of_track(){
 int copy_playlist_backend::get_Progress(){
   return PROGRESS;
 }
+void copy_playlist_backend::Roger_the_notification_of_end_of_operation(){
+  qDebug()<<"enter roger the notification of end of operation";
+  PROGRESS=0;
+  SUCCESS=false;
+  emit Progress_changed();
+}
 bool copy_playlist_backend::Load_playlist(){
   PLAYLIST_LOADED_FLAG=false;
   NEW_PATH_UPTODATE_FLAG=false;
   if (is_Playlist_path_valid()){
     List_all_files();
   }
+  if (PLAYLIST_LOADED_FLAG) {
+    emit A_new_playlist_is_loaded();
+  }
+  Define_new_path();   //automatically attempt to define the new path straight after loading them (in case the *DEVICE_PATH is already define)
   return PLAYLIST_LOADED_FLAG;
 }
 bool copy_playlist_backend::Load_playlist(QString playlist_path){
-  PLAYLIST_LOADED_FLAG=false;
-  NEW_PATH_UPTODATE_FLAG=false;
   set_Playlist_path(playlist_path);
-    if (is_Playlist_path_valid()){
-    List_all_files();
-  }
-  qDebug()<<PLAYLIST_LOADED_FLAG;
-  return PLAYLIST_LOADED_FLAG;  
+  Load_playlist();
 }
 bool copy_playlist_backend::Define_new_path(){ 
   NEW_PATH_UPTODATE_FLAG=false;
@@ -137,10 +142,13 @@ bool copy_playlist_backend::Define_new_path(){
        NEW_PATH_UPTODATE_FLAG=true;     
     }    
   }
+  if (NEW_PATH_UPTODATE_FLAG) {
+    emit The_dir_is_uptodate();
+  }  
   return NEW_PATH_UPTODATE_FLAG;
 }
 bool copy_playlist_backend::Sync_the_playlist(){
-  bool SUCCESS=false;
+  SUCCESS=false;
   if(PLAYLIST_LOADED_FLAG && NEW_PATH_UPTODATE_FLAG){
     QDir dir_buffer;
     QString path_buff;
@@ -163,6 +171,8 @@ bool copy_playlist_backend::Sync_the_playlist(){
     }
     SUCCESS=true;			//TODO CHECK THIS !
   }
+  qDebug()<<"now emitting the Copy_operation_ended signals";
+  emit Copy_operation_ended();
   return SUCCESS;
 }
 bool copy_playlist_backend::List_all_files(){

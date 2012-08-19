@@ -8,6 +8,8 @@
 #include <QWidget>
 #include <QErrorMessage>
 #include <QSound>
+#include <QMessageBox>
+#include <QPushButton>
 #include "copy_playlist_backend.h"
 
 
@@ -26,6 +28,8 @@ public:
 public slots:
     void Copyplaylist();
     void Loadplaylist(QString playlist_path);
+    void Retrieve_playlist_song();
+    void Retrieve_new_path();
     void Loaddir(QString dir_path);		
     void Sync_type_has_changed();
 private:
@@ -44,6 +48,8 @@ private:
    QDir *DEFAULT_DEVICE_DIR;
    QFileDialog* FILE_DIALOG_PLAYLIST;
    QFileDialog* FILE_DIALOG_DIR;
+   QMessageBox* DIALOG_COPY_ENDED;
+   QPushButton* OK_BUTTON;
   //******************************************METHOD
    void Setup_ui();
    void Load_icons();

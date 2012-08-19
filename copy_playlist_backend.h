@@ -46,16 +46,22 @@ public:
   int  get_Numbers_of_track();			/*!<Get the numbers of track that have been found in the playlist*/
   int get_Progress(); 				/*!<Get the numbers of track already copied during the copy operation*/
   //******************************************ACTIONORS
+ 
 public slots:
-  bool Load_playlist();				/*!<Launch the operation of scanning a playlist and resolve path to all founf entries*/
+  bool Load_playlist();				/*!<Launch the operation of scanning a playlist and resolve path to all found entries*/
   bool Load_playlist(QString playlist_path); 	/*!<Overloaded function*/
   bool Define_new_path();			/*!<Launch the operation of resolving new path for all song that have to be copier*/
   bool Sync_the_playlist();			/*!<Launch the actual copy operation*/
+  void Roger_the_notification_of_end_of_operation(); /*!<Tell the backend we understand the copy operation is ended. This will re-put the progress bar to 0 and SUCCESS to false*/
+  
   //******************************************METHOD
   //********************************1st level method  
 signals: 
     void Error_raised();			/*!<Emitted when an error is encountered. This is the alarm bell of the backend*/
     void Progress_changed();			/*!<Emitted when the progress made during the copy operation changed*/
+    void Copy_operation_ended();
+    void A_new_playlist_is_loaded();
+    void The_dir_is_uptodate();
 private:
   //******************************************OBJECT
   QVector<QDir> SONG_PATH_LIST;			/*!<The list of path to all songs found in the playlist*/
@@ -71,28 +77,29 @@ private:
   bool PLAYLIST_LOADED_FLAG;			/*!<FLAG: if the playlist have been loaded (i.e path to all songs resolved?)*/
   bool NEW_PATH_UPTODATE_FLAG;			/*!<FLAG: if the new path have been resolved or not*/
   bool EMBED_M3U;				/*!<Define wether an m3u file has to be written or not together with the sync operation!*/
+  bool SUCCESS;					/*!<Is true if the copy operation is a success. It becomes true just when Progress reach 100%*/
   //******************************************METHOD
   //********************************1st level method
-  bool List_all_files();	//A0
-  bool Define_new_m3u();				//C0
-  bool Autodetect_playlist_type();			//E0//
-  bool is_Playlist_path_valid();			// check validity of path (if the path exist, is readable? not if it is a known kind of playlist
-  bool is_Device_path_valid();				// check validity of path (if the path exist, is writable?)
-  bool is_Valid_song_path(QDir song_path);
+  bool List_all_files();			/*!<List all the file referenced in the playlist file located at *PLAYLIST_PATH and write their address in SONG_PATH_LIST This is an internal function called by Loadplaylist. The function is hence private*/
+  bool Define_new_m3u();			/*!<This function create a new m3u file that will be located in *DEVICE_PATH (embeded on the device). The song reference in this m3u will be those contained in *NEW_SONG_PATH. The *NEW_SONG_PATH is obviously modified, so that the path in the playlist is a relative path from *DEVICE_PATH to *NEW_SONG_PATH*/
+  bool Autodetect_playlist_type();		/*!<This function autodetect the playlist type (i.e m3u, xspf, wpl etc) based on the extension of the file. The result is stored in PLAYLIST_TYPE IMPORTANT: currently, autodetection of amarok db playlist is not working. The PLAYLIST_TYPE in case of amarok_db has to be forced from elsewhere and this method will then return a true*/
+  bool is_Playlist_path_valid();		/*!<This check wether the path is valid i.e: exist, readable. NOT if the file itself is a kind of playlist file supported by this backend or not !*/
+  bool is_Device_path_valid();			/*!<This check wether the *DEVICE_PATH exists, is a directory and if we can write into this*/
+  bool is_Valid_song_path(QDir song_path);	/*!<This check wether the specified path exists and is a File. Typically used to check if the copy of a given song worked*/
   //*******************2nd level method*************
-  bool List_all_files_from_m3u();		
-  bool List_all_files_from_xspf();			
-  bool List_all_files_from_wpl();			
-  bool List_all_files_from_amarok_db();		
+  bool List_all_files_from_m3u();		/*!<This is usually called by "List_all_files". It will read a m3u files and write all songpath encountered in *SONG_PATH_LIST */
+  bool List_all_files_from_xspf();		/*!<This is usually called by "List_all_files". It will read a xspf files and write all songpath encountered in *SONG_PATH_LIST. IMPORTANT: CURRENTLY NOT IMPLEMENTED !!!!!!!!!!!!!!!!!!!!!!*/	
+  bool List_all_files_from_wpl();		/*!<This is usually called by "List_all_files". It will read a wpl files and write all songpath encountered in *SONG_PATH_LIST. IMPORTANT: CURRENTLY NOT IMPLEMENTED !!!!!!!!!!!!!!!!!!!!!!*/		
+  bool List_all_files_from_amarok_db();		/*!<This is usually called by "List_all_files". It will read a amarok_db playlist and write all songpath encountered in *SONG_PATH_LIST. IMPORTANT: CURRENTLY NOT IMPLEMENTED !!!!!!!!!!!!!!!!!!!!!!*/	
   //********3rd level method************************
-  bool Open_local_playlist_file();			//A011 -A021 -A031
-  bool Go_to_the_device_path_position();
-  bool Go_to_playlist_path_position();			//Place the current path to the directorie in which to playlist is stored
-  bool Go_to_the_song_position(QDir* song_path);	//Plaece the current path to the dir in which the song is stored
-  QString Get_the_following_record();			//A012
-  QString Get_name_of_file_from_path(QDir* dir);
-  QDir Build_a_new_path(QDir* device_path, QDir* song_path );
-  QString Build_a_relative_path_from_here(QDir* device_path, QDir* song_path);
+  bool Open_local_playlist_file();		/*!<Provides the service of opening a playlist local file (m3u, xspf, wpl ...) and put it contents into *FILE_STREAM. so that the content can be processed in "List_all_files_from_m3u" for example*/
+  bool Go_to_the_device_path_position();	/*!<Places the current working directory of the backend into the *DEVICE_PATH directory*/
+  bool Go_to_playlist_path_position();		/*!<Places the current working directory of the backend into the *PLAYLIST_PATH directory*/
+  bool Go_to_the_song_position(QDir* song_path);/*!<Places the current working directory of the backend into the *song_path directory*/
+  QString Get_the_following_record();		/*!<Search the FILE_STREAM for the next record (next path to a song) contains into the stream. Returns empty string ("") if no further record is found. IMPORTANT: CURRENTLY ONLY M3U IMPLEMENTED*/
+  QString Get_name_of_file_from_path(QDir* dir);/*!<Return the file name (without extension) for the file located at the *dir path*/
+  QDir Build_a_new_path(QDir* device_path, QDir* song_path ); /*!<Build a new path by adding: (the relative path from *PLAYLIST_PATH to *song_path) to (*DEVICE_PATH)*/
+  QString Build_a_relative_path_from_here(QDir* device_path, QDir* song_path);/*!<Create a relative path from the *device_path to the *song_path. This function is typically used by "Define_new_m3u" to create an embedded m3u file with relative path to emebede mp3 files*/
   //low level method********************************
   
 };
