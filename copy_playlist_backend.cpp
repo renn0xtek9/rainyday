@@ -25,7 +25,23 @@ copy_playlist_backend::~copy_playlist_backend(){
   delete DEVICE_PATH;
   delete PLAYLIST_PATH;
   delete PLAYLIST_FILE;
-  //TODO DELETE the other objects
+  delete LAST_ERROR;
+  delete FILE_STREAM;
+  int size=SONG_PATH_LIST.size()-1;
+  for (int i=size;i>-1;i--)
+  {
+    SONG_PATH_LIST.remove(i); //TODO ENSURE THER IS NO MEMORY LEAK IN HERE ! (ARE THE DESTRUCTOR OF ALL QDIR WELL CALLED )
+  }
+    SONG_PATH_LIST.clear();
+    SONG_PATH_LIST.squeeze();
+  int size=NEW_SONG_PATH.size()-1;
+  for (int i=size;i>-1;i--)
+  {
+    NEW_SONG_PATH.remove(i); //TODO ENSURE THER IS NO MEMORY LEAK IN HERE ! (ARE THE DESTRUCTOR OF ALL QDIR WELL CALLED )
+  }
+    NEW_SONG_PATH.clear();
+    NEW_SONG_PATH.squeeze();
+    qDebug()<<"end of copy_playlist backend destructor";
 }
 bool copy_playlist_backend::set_Device_path(QString device_path){
   DEVICE_PATH->setPath(device_path);
@@ -84,7 +100,7 @@ QString copy_playlist_backend::get_Playlist_name(){
   QString name("");
   if(is_Playlist_path_valid())
   {
-    Autodetect_playlist_type();
+    Autodetect_playlist_type();s, là
     if((PLAYLIST_TYPE==m3u)||(PLAYLIST_TYPE==wpl)||(PLAYLIST_TYPE==xspf)){
       name=Get_name_of_file_from_path(PLAYLIST_PATH);	
       }
