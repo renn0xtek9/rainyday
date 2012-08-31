@@ -3,9 +3,13 @@ enable_language(CXX)
 PROJECT(QPlaylisTransfer) # This give the project a name
 
 #IF QT UN-COMMENT THE FOLLOWING LINE
-FIND_PACKAGE(Qt4 REQUIRED)
+FIND_PACKAGE(Qt4  REQUIRED)
+### Other qt modules
+SET (QT_USE_QTXMLPATTERNS)
+
 
 ### Version number
+
 SET (project_name_VERSION_MAJOR 1) # The MAJOR version number.
 SET (project_name_VERSION_MINOR 0) # The MINOR version number
 
@@ -14,7 +18,7 @@ SET (project_name_VERSION_MINOR 0) # The MINOR version number
 
 ### Directories
 #find_library(my_lib REQUIRED) #find all required librarys (ex here libmy_lib.so would be find and REQUIRED
-INCLUDE_DIRECTORIES(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ) #Directories for the  header files (.h)
+INCLUDE_DIRECTORIES(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR}  ${QT_QTXML_INCLUDE_DIR} ${QT_QTXMLPATTERNS_INCLUDE_DIR}) #Directories for the  header files (.h)
 
 
 ### Sources
@@ -33,7 +37,7 @@ LINK_DIRECTORIES(/home/max/Documents/C/Library/lib/) # Directories for the compi
 
 
 #IF QT UN-COMMENT THE FOLLOWING LINE
-qt4_automoc(${QPlaylisTransfer_SOURCES}) #don't know what it does but I think it is kind of better when it is there
+qt4_automoc(${QPlaylisTransfer_SOURCES} ${QPlaylisTransfer_HEADERS_MOC} ${QPlaylisTransfer_RCC_SRCS}) #don't know what it does but I think it is kind of better when it is there
 add_executable(QPlaylisTransfer ${QPlaylisTransfer_SOURCES} ${QPlaylisTransfer_HEADERS_MOC} ${QPlaylisTransfer_RCC_SRCS}) #tell cmake to create the executable "project_nam" based on the sources collected in "project_name_SRCS
-target_link_libraries(QPlaylisTransfer ${QT_LIBRARIES}) #link the program with the library with target_link_libraries(/path/to/lib.so)
+target_link_libraries(QPlaylisTransfer ${QT_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_QTXML_LIBRARY} ${QT_QTXMLPATTERNS_LIBRARY}) #link the program with the library with target_link_libraries(/path/to/lib.so)
 #Do always give the full path for all of your .so files

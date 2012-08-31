@@ -5,6 +5,7 @@
 #include<QDir>
 #include<QFileInfo>
 #include<QDebug>
+#include<QXmlQuery>
 #include "copy_playlist_backend.h"
 
 
@@ -18,7 +19,10 @@ copy_playlist_backend::copy_playlist_backend(){
   PLAYLIST_PATH=new QDir("");
   LAST_ERROR=new QString("");
   FILE_STREAM=0;
-  EMBED_M3U=TRUE;
+  EMBED_M3U=TRUE;  
+  XQUERY_FILE=new QFile(QString(":xquery/all_location_from_xspf.xq"));
+  XQUERY_FILE->open(QIODevice::ReadOnly);
+  XSPF_QUERY_ALL_TRACK=new QString (QString::fromLatin1(XQUERY_FILE->readAll()));
   
 }
 copy_playlist_backend::~copy_playlist_backend(){
@@ -34,7 +38,7 @@ copy_playlist_backend::~copy_playlist_backend(){
   }
     SONG_PATH_LIST.clear();
     SONG_PATH_LIST.squeeze();
-  int size=NEW_SONG_PATH.size()-1;
+  size=NEW_SONG_PATH.size()-1;
   for (int i=size;i>-1;i--)
   {
     NEW_SONG_PATH.remove(i); //TODO ENSURE THER IS NO MEMORY LEAK IN HERE ! (ARE THE DESTRUCTOR OF ALL QDIR WELL CALLED )
@@ -100,7 +104,7 @@ QString copy_playlist_backend::get_Playlist_name(){
   QString name("");
   if(is_Playlist_path_valid())
   {
-    Autodetect_playlist_type();s, là
+    Autodetect_playlist_type();
     if((PLAYLIST_TYPE==m3u)||(PLAYLIST_TYPE==wpl)||(PLAYLIST_TYPE==xspf)){
       name=Get_name_of_file_from_path(PLAYLIST_PATH);	
       }
@@ -287,6 +291,7 @@ if (!autodetected){
   LAST_ERROR->append(PLAYLIST_PATH->path());
   emit Error_raised();
 }
+qDebug()<<"The playlist is autodetected as"<<PLAYLIST_TYPE;
 return autodetected;
 }
 bool copy_playlist_backend::is_Playlist_path_valid(){
@@ -377,7 +382,60 @@ bool copy_playlist_backend::List_all_files_from_m3u(){
   return result;
 }
 bool copy_playlist_backend::List_all_files_from_xspf(){
+  qDebug()<<"enter the list_all_files_from_xspf function";
   bool result=false;
+    if(Open_local_playlist_file()){
+    Go_to_playlist_path_position();
+    QDir dir_buffer(QDir::current());       
+    QXmlQuery query(QXmlQuery::XQuery10);
+    QStringList list_of_locations("");
+    qDebug()<<"is playlist file open?"<<PLAYLIST_FILE->isOpen();
+    query.setQuery(*XSPF_QUERY_ALL_TRACK);
+    query.bindVariable("inputDocument", PLAYLIST_FILE); //this affect PLAYLIST_FILE the variable name "inputDocument" inside the Xquery
+    qDebug()<<"The xquery track is"<<*XSPF_QUERY_ALL_TRACK;
+    if (query.isValid()){
+      qDebug()<<"The xquery is valid";
+      
+      if (!query.evaluateTo(&list_of_locations)){ 
+	qDebug()<<"The xquery is evaluated as false (problems occured when querying the playlist)";
+	qDebug()<<"List of locations"<<list_of_locations;
+	return false;
+      }
+    }      
+    //new way
+    for(int i=0;i<list_of_locations.size()-1;i++)
+    {
+      dir_buffer.setPath(list_of_locations.at(i));
+      if (dir_buffer.isRelative()){
+	dir_buffer.setPath(dir_buffer.absolutePath());
+      }
+      if (is_Valid_song_path(dir_buffer)){
+	if (!result){
+	  result=true;
+	 } 		//as soon as we got on valid song we get loaded THIS CHANGE THE PLAYLIST_LOADED_FLAG
+	 SONG_PATH_LIST.append(dir_buffer);
+	}
+      else{
+	LAST_ERROR->clear();
+	LAST_ERROR->append("No file found in:");
+	LAST_ERROR->append(dir_buffer.path());
+	qDebug()<<"path="<<dir_buffer.path();
+	qDebug()<<"current path="<<QDir::currentPath();
+	emit Error_raised();
+      }
+    }
+   }    
+  else{
+    LAST_ERROR->clear();
+    LAST_ERROR->append("Unable to open the playlist_file:");
+    emit Error_raised();
+  }
+  /*******************************/
+  qDebug()<<"end of list_xspf_files, SONG_PATH_LIST ist";
+  for(int i=0;i<SONG_PATH_LIST.size();i++){
+    qDebug()<<SONG_PATH_LIST.at(i).path();
+  }
+  qDebug()<<"Result of list_xspf"<<result;
   return result;
 }
 bool copy_playlist_backend::List_all_files_from_wpl(){

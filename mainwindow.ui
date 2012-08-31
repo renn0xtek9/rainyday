@@ -26,6 +26,9 @@
     <property name="text">
      <string>Playlist</string>
     </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
    </widget>
    <widget class="QPushButton" name="button_dir">
     <property name="geometry">

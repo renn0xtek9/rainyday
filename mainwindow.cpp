@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     FILE_DIALOG_DIR=new QFileDialog(this,"Select a directory",DEFAULT_DEVICE_DIR->path(),"all/allfiles");
     FILE_DIALOG_DIR->setFilter(QDir::AllDirs);
     FILE_DIALOG_DIR->setFileMode(QFileDialog::Directory);
+    
     //Initial conditions
     CP_BCK->set_Sync_type(get_Sync_type());
     //Connections
@@ -49,6 +50,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(OK_BUTTON,SIGNAL(clicked(bool)),CP_BCK,SLOT(Roger_the_notification_of_end_of_operation()));
     QObject::connect(CP_BCK,SIGNAL(A_new_playlist_is_loaded()),this,SLOT(Retrieve_playlist_song()));
     QObject::connect(CP_BCK,SIGNAL(The_dir_is_uptodate()),this,SLOT(Retrieve_new_path()));
+    
+    
+    ui->button_copy->setFlat(false);
+    ui->button_dir->setFlat(true);
+    ui->button_playlist->setFlat(false);
     }
 MainWindow::~MainWindow(){
     delete ui;
@@ -100,6 +106,8 @@ void MainWindow::Setup_ui(){
     ui->sync_type_box->addItem("One folder per playlist");
     ui->sync_type_box->addItem("Flat synchronisation");
     ui->sync_type_box->setFixedWidth(200);
+    
+
 }
 void MainWindow::Load_icons(){
   ICON =new QIcon(":rainyday_64.png");

@@ -59,9 +59,9 @@ public slots:
 signals: 
     void Error_raised();			/*!<Emitted when an error is encountered. This is the alarm bell of the backend*/
     void Progress_changed();			/*!<Emitted when the progress made during the copy operation changed*/
-    void Copy_operation_ended();
-    void A_new_playlist_is_loaded();
-    void The_dir_is_uptodate();
+    void Copy_operation_ended();		/*!<Emitted when thes copying operation is ended, no matter succesfuly or not*/
+    void A_new_playlist_is_loaded();		/*!<Emitted if the path registered in a playlist have been successfully loaded*/
+    void The_dir_is_uptodate();			/*!<Emitted if the new path have been succesfully built*/
 private:
   //******************************************OBJECT
   QVector<QDir> SONG_PATH_LIST;			/*!<The list of path to all songs found in the playlist*/
@@ -71,6 +71,8 @@ private:
   QFile* PLAYLIST_FILE;				/*!<The object that describe the playlist file itself*/
   QString* LAST_ERROR;				/*!<The last raised error*/
   QTextStream* FILE_STREAM;			/*!<A text stream to read the playlist file*/
+  QFile* XQUERY_FILE;				/*!<The file that contains the prepared xquery statement to select all track locations form an xspf file*/
+  QString* XSPF_QUERY_ALL_TRACK;		/*!<A string that contains the xquery that will ask for all the track located inside the xspf playlist*/
   sync_type SYNC_TYPE;				/*!<The current strategy*/
   playlist_type PLAYLIST_TYPE;			/*!<The type of playlist (m3u or xspf or wpl etc)*/
   int PROGRESS;					/*!<The numbers of files already copied*/
