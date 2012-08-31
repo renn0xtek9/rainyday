@@ -71,8 +71,6 @@ private:
   QFile* PLAYLIST_FILE;				/*!<The object that describe the playlist file itself*/
   QString* LAST_ERROR;				/*!<The last raised error*/
   QTextStream* FILE_STREAM;			/*!<A text stream to read the playlist file*/
-  QFile* XQUERY_FILE;				/*!<The file that contains the prepared xquery statement to select all track locations form an xspf file*/
-  QString* XSPF_QUERY_ALL_TRACK;		/*!<A string that contains the xquery that will ask for all the track located inside the xspf playlist*/
   sync_type SYNC_TYPE;				/*!<The current strategy*/
   playlist_type PLAYLIST_TYPE;			/*!<The type of playlist (m3u or xspf or wpl etc)*/
   int PROGRESS;					/*!<The numbers of files already copied*/

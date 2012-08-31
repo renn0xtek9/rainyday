@@ -6,6 +6,7 @@
 #include<QFileInfo>
 #include<QDebug>
 #include<QXmlQuery>
+#include<QXmlStreamReader>
 #include "copy_playlist_backend.h"
 
 
@@ -20,9 +21,9 @@ copy_playlist_backend::copy_playlist_backend(){
   LAST_ERROR=new QString("");
   FILE_STREAM=0;
   EMBED_M3U=TRUE;  
-  XQUERY_FILE=new QFile(QString(":xquery/all_location_from_xspf.xq"));
-  XQUERY_FILE->open(QIODevice::ReadOnly);
-  XSPF_QUERY_ALL_TRACK=new QString (QString::fromLatin1(XQUERY_FILE->readAll()));
+  //XQUERY_FILE=new QFile(QString(":xquery/all_location_from_xspf.xq"));
+  //XQUERY_FILE->open(QIODevice::ReadOnly);
+  //XSPF_QUERY_ALL_TRACK=new QString (QString::fromLatin1(XQUERY_FILE->readAll()));
   
 }
 copy_playlist_backend::~copy_playlist_backend(){
@@ -386,22 +387,31 @@ bool copy_playlist_backend::List_all_files_from_xspf(){
   bool result=false;
     if(Open_local_playlist_file()){
     Go_to_playlist_path_position();
-    QDir dir_buffer(QDir::current());       
-    QXmlQuery query(QXmlQuery::XQuery10);
-    QStringList list_of_locations("");
-    qDebug()<<"is playlist file open?"<<PLAYLIST_FILE->isOpen();
-    query.setQuery(*XSPF_QUERY_ALL_TRACK);
-    query.bindVariable("inputDocument", PLAYLIST_FILE); //this affect PLAYLIST_FILE the variable name "inputDocument" inside the Xquery
-    qDebug()<<"The xquery track is"<<*XSPF_QUERY_ALL_TRACK;
-    if (query.isValid()){
-      qDebug()<<"The xquery is valid";
-      
-      if (!query.evaluateTo(&list_of_locations)){ 
-	qDebug()<<"The xquery is evaluated as false (problems occured when querying the playlist)";
-	qDebug()<<"List of locations"<<list_of_locations;
-	return false;
-      }
-    }      
+    QDir dir_buffer(QDir::current());
+    QStringList list_of_locations;
+    QXmlStreamReader xmlStream(PLAYLIST_FILE);
+    while(!xmlStream.atEnd())
+    {
+        xmlStream.readNext();
+        if(xmlStream.isStartElement())
+        {
+            // Read the tag name.
+            qDebug()<<"name of the xml start element: "<<xmlStream.name().toString();
+	    if(xmlStream.name().toString()=="location"){
+	      /* ...go to the next. */
+	      xmlStream.readNext();
+	      /*
+	      * This elements needs to contain Characters so we know it's
+	      * actually data, if it's not we'll leave.
+	      */
+	      if(xmlStream.tokenType() != QXmlStreamReader::Characters) {
+		  return false; //TODO HANDLE THIS ERROR WHERE THERE IS NOTHING BETWEEN <location> and </location>
+	      }
+	      list_of_locations.append(xmlStream.text().toString());
+	      qDebug()<<"location registered is: "<<list_of_locations.at(list_of_locations.size()-1);
+	    }
+        }
+    }
     //new way
     for(int i=0;i<list_of_locations.size()-1;i++)
     {
