@@ -19,6 +19,7 @@ copy_playlist_backend::copy_playlist_backend(){
   DEVICE_PATH=new QDir(QDir::homePath());
   PLAYLIST_PATH=new QDir("");
   LAST_ERROR=new QString("");
+  DIR_KEEP_ARCH_ROOT=new QString("/home/max/Music");
   FILE_STREAM=0;
   EMBED_M3U=TRUE;  
   //XQUERY_FILE=new QFile(QString(":xquery/all_location_from_xspf.xq"));
@@ -77,6 +78,9 @@ bool copy_playlist_backend::set_Sync_type(sync_type synchronization_type){
   }
   return ((synchronization_type==keep_arch)||(synchronization_type==flat)||(synchronization_type==one_folder_per_playlist));
 }
+void copy_playlist_backend::set_Dir_where_data_struct_kept(QString dir){
+  *DIR_KEEP_ARCH_ROOT=dir;
+}
 void copy_playlist_backend::set_Embed_m3u_file(bool embed){
   EMBED_M3U=embed;
 }
@@ -118,6 +122,9 @@ QString copy_playlist_backend::get_Full_dir_name(){
 }
 QString copy_playlist_backend::get_Dir_name(){
   return DEVICE_PATH->dirName();
+}
+QString copy_playlist_backend::get_Dir_where_data_struct_kept(){
+  return *DIR_KEEP_ARCH_ROOT;
 }
 int copy_playlist_backend::get_Numbers_of_track(){
    return NEW_SONG_PATH.size();
@@ -557,7 +564,8 @@ QString copy_playlist_backend::Build_a_relative_path_from_here(QDir* device_path
   QString result(finfobuffer.fileName());  
   QDir song_path_buff=*song_path;
   song_path_buff.cdUp();	//places us on the paent dir of the file 
-  while ((song_path_buff!=QDir::current())&&(song_path_buff.absolutePath()!=QDir::rootPath())){
+  qDebug()<<" We are creating a relative path from"<<QDir::current();
+  while ((song_path_buff.absolutePath()!=*DIR_KEEP_ARCH_ROOT)&&(song_path_buff.absolutePath()!=QDir::rootPath())){
     result.prepend("/");
     result.prepend(song_path_buff.dirName());
     song_path_buff.cdUp();

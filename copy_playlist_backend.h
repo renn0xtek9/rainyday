@@ -36,6 +36,7 @@ public:
   bool set_Device_path(QDir device_path);		/*!<Overloaded function*/
   bool set_Sync_type(sync_type synchronization_type);	/*!<Define the syncing strategy that has to be used*/
   void set_Embed_m3u_file(bool embed);			/*!<Choose wether a bespoke m3u (with relative file path) has to be created on the device. The m3u file will be created directly in the device path directory*/
+  void set_Dir_where_data_struct_kept(QString dir);			/*!<Define the directory under which the data structure will be kept for the keep_arch strategy. All songs will be listed have to be in this directory (or one of its subdirectory)*/
   //******************************************ACCESSORS
   QStringList get_Song_list();			/*!<Get the list of songs. Eg "/path/to/song.mp3" becomes "song"*/
   QStringList get_New_path_list();		/*!<Get the list of path (on the destination device) where songs will be copied*/
@@ -43,6 +44,7 @@ public:
   QString get_Playlist_name();			/*!<Get the name of the playlist. In case of a local file, directly the filename without extension*/
   QString get_Full_dir_name();			/*!<Get the complete path of the destination device*/
   QString get_Dir_name();                        /*!<Get the directory nane of the destination devices*/
+  QString get_Dir_where_data_struct_kept();	/*!<Returns the directory under which the data structure will be kept for the keep_arch strategy. All songs will be listed have to be in this directory (or one of its subdirectory)*/
   int  get_Numbers_of_track();			/*!<Get the numbers of track that have been found in the playlist*/
   int get_Progress(); 				/*!<Get the numbers of track already copied during the copy operation*/
   //******************************************ACTIONORS
@@ -71,6 +73,7 @@ private:
   QFile* PLAYLIST_FILE;				/*!<The object that describe the playlist file itself*/
   QString* LAST_ERROR;				/*!<The last raised error*/
   QTextStream* FILE_STREAM;			/*!<A text stream to read the playlist file*/
+  QString* DIR_KEEP_ARCH_ROOT;			/*!<This is the directory under which the keep_arch strategy will keep the directory architecture. Usually it is meant to be the music folder (i.e /home/user/Music/ in Linux). If a song is located outside this directory, the keep_arch strategy will not manage to build a relative path for this song*/
   sync_type SYNC_TYPE;				/*!<The current strategy*/
   playlist_type PLAYLIST_TYPE;			/*!<The type of playlist (m3u or xspf or wpl etc)*/
   int PROGRESS;					/*!<The numbers of files already copied*/
