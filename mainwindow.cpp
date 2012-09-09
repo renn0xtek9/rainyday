@@ -11,7 +11,8 @@
 #include <QMessageBox>
 #include "copy_playlist_backend.h"
 
-
+//TODO Add a way to show and edit the DIR_KEEP_ARCH_ROOT using set_Dir_where_data_struct_kept() and get_Dir_where_data_struct_kept() processes
+//TODO Save the last DIR_KEEP_ARCH_ROOT within a config file and load it when the programm is starting
 
 
 MainWindow::MainWindow(QWidget *parent) :

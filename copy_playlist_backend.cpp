@@ -21,11 +21,7 @@ copy_playlist_backend::copy_playlist_backend(){
   LAST_ERROR=new QString("");
   DIR_KEEP_ARCH_ROOT=new QString("/home/max/Music");
   FILE_STREAM=0;
-  EMBED_M3U=TRUE;  
-  //XQUERY_FILE=new QFile(QString(":xquery/all_location_from_xspf.xq"));
-  //XQUERY_FILE->open(QIODevice::ReadOnly);
-  //XSPF_QUERY_ALL_TRACK=new QString (QString::fromLatin1(XQUERY_FILE->readAll()));
-  
+  EMBED_M3U=TRUE;
 }
 copy_playlist_backend::~copy_playlist_backend(){
   delete DEVICE_PATH;
