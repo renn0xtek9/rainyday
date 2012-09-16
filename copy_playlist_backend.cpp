@@ -252,7 +252,7 @@ bool copy_playlist_backend::Define_new_m3u(){
 	qDebug()<<"We are supposed to be at the song position"<<QDir::currentPath();
       streambuffer<<"#EXTINF";
       endl(streambuffer);
-      streambuffer<<Build_a_relative_path_from_here(DEVICE_PATH,&dir_buffer);
+      streambuffer<<Build_a_relative_path_from_here(DEVICE_PATH,&dir_buffer,DEVICE_PATH->absolutePath());
       endl(streambuffer);
       }
       else{
@@ -526,7 +526,7 @@ QDir copy_playlist_backend::Build_a_new_path(QDir* device_path, QDir* song_path 
   switch(SYNC_TYPE){
     case(keep_arch):{
         Go_to_playlist_path_position();
-	QString full_path(Build_a_relative_path_from_here(device_path,song_path));
+	QString full_path(Build_a_relative_path_from_here(device_path,song_path,*DIR_KEEP_ARCH_ROOT));
 	if (!full_path.isEmpty()){
 	  full_path.prepend("/");
 	  full_path.prepend(device_path->absolutePath());
@@ -555,13 +555,13 @@ QDir copy_playlist_backend::Build_a_new_path(QDir* device_path, QDir* song_path 
   }
   return dir_buffer;  
 }
-QString copy_playlist_backend::Build_a_relative_path_from_here(QDir* device_path,QDir* song_path){
+QString copy_playlist_backend::Build_a_relative_path_from_here(QDir* device_path,QDir* song_path, QString rootdir){
   QFileInfo finfobuffer(*song_path,song_path->path());
   QString result(finfobuffer.fileName());  
   QDir song_path_buff=*song_path;
   song_path_buff.cdUp();	//places us on the paent dir of the file 
-  qDebug()<<" We are creating a relative path from"<<QDir::current();
-  while ((song_path_buff.absolutePath()!=*DIR_KEEP_ARCH_ROOT)&&(song_path_buff.absolutePath()!=QDir::rootPath())){
+  qDebug()<<" We are creating a relative path from"<<QDir::current() ;
+  while ((song_path_buff.absolutePath()!=rootdir)&&(song_path_buff.absolutePath()!=QDir::rootPath())){
     result.prepend("/");
     result.prepend(song_path_buff.dirName());
     song_path_buff.cdUp();

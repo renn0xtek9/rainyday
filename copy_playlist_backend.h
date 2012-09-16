@@ -102,7 +102,7 @@ private:
   QString Get_the_following_record();		/*!<Search the FILE_STREAM for the next record (next path to a song) contains into the stream. Returns empty string ("") if no further record is found. IMPORTANT: CURRENTLY ONLY M3U IMPLEMENTED*/
   QString Get_name_of_file_from_path(QDir* dir);/*!<Return the file name (without extension) for the file located at the *dir path*/
   QDir Build_a_new_path(QDir* device_path, QDir* song_path ); /*!<Build a new path by adding: (the relative path from *PLAYLIST_PATH to *song_path) to (*DEVICE_PATH)*/
-  QString Build_a_relative_path_from_here(QDir* device_path, QDir* song_path);/*!<Create a relative path from the *device_path to the *song_path. This function is typically used by "Define_new_m3u" to create an embedded m3u file with relative path to emebede mp3 files*/
+  QString Build_a_relative_path_from_here(QDir* device_path, QDir* song_path, QString rootdir);/*!<Create a relative path from the *device_path to the *song_path. This function is typically used by "Define_new_m3u" to create an embedded m3u file with relative path to emebede mp3 files*/
   //low level method********************************
   
 };
