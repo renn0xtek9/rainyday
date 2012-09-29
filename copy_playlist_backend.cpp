@@ -416,7 +416,7 @@ bool copy_playlist_backend::List_all_files_from_xspf(){
         }
     }
     //new way
-    for(int i=0;i<list_of_locations.size()-1;i++)
+    for(int i=0;i<list_of_locations.size();i++)
     {
       dir_buffer.setPath(list_of_locations.at(i));
       if (dir_buffer.isRelative()){
