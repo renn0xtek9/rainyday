@@ -141,10 +141,11 @@ bool copy_playlist_backend::Load_playlist(){
   if (is_Playlist_path_valid()){
     List_all_files();
   }
+  Define_new_path();   //automatically attempt to define the new path straight after loading them (in case the *DEVICE_PATH is already define)
+  
   if (PLAYLIST_LOADED_FLAG) {
     emit A_new_playlist_is_loaded();
   }
-  Define_new_path();   //automatically attempt to define the new path straight after loading them (in case the *DEVICE_PATH is already define)
   return PLAYLIST_LOADED_FLAG;
 }
 bool copy_playlist_backend::Load_playlist(QString playlist_path){
