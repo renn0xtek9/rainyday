@@ -7,6 +7,7 @@
 #include<QDebug>
 #include<QXmlQuery>
 #include<QXmlStreamReader>
+#include<QUrl>
 #include "copy_playlist_backend.h"
 
 
@@ -418,7 +419,7 @@ bool copy_playlist_backend::List_all_files_from_xspf(){
     //new way
     for(int i=0;i<list_of_locations.size();i++)
     {
-      dir_buffer.setPath(list_of_locations.at(i));
+      dir_buffer.setPath(QUrl::fromEncoded(list_of_locations.at(i).toAscii()).path());
       if (dir_buffer.isRelative()){
 	dir_buffer.setPath(dir_buffer.absolutePath());
       }
