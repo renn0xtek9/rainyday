@@ -10,6 +10,7 @@
 #include <QSound>
 #include <QMessageBox>
 #include <QPushButton>
+#include "ui_mainwindow.h"
 #include "copy_playlist_backend.h"
 
 

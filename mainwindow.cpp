@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     
     
     ui->button_copy->setFlat(false);
-    ui->button_dir->setFlat(true);
+    ui->button_dir->setFlat(false);
     ui->button_playlist->setFlat(false);
     }
 MainWindow::~MainWindow(){

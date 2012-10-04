@@ -2,9 +2,10 @@
  <qresource>
      <file alias="playlist.png">images/playlist.png</file>
      <file alias="dir.png">images/dir.png</file>
+     <file alias="copy.png">images/copy.png</file>
      <file alias="rainyday_64.png">images/rainyday_64.png</file>
      <file>images/playlist.png</file>
      <file>images/dir.png</file>
-     <file>images/rainyday_64.png</file>
+     <file>images/copy.png</file>
  </qresource>
  </RCC> 

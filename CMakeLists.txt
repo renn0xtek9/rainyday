@@ -37,7 +37,7 @@ LINK_DIRECTORIES(/home/max/Documents/C/Library/lib/) # Directories for the compi
 
 
 #IF QT UN-COMMENT THE FOLLOWING LINE
-qt4_automoc(${QPlaylisTransfer_SOURCES} ${QPlaylisTransfer_HEADERS_MOC} ${QPlaylisTransfer_RCC_SRCS}) #don't know what it does but I think it is kind of better when it is there
-add_executable(QPlaylisTransfer ${QPlaylisTransfer_SOURCES} ${QPlaylisTransfer_HEADERS_MOC} ${QPlaylisTransfer_RCC_SRCS}) #tell cmake to create the executable "project_nam" based on the sources collected in "project_name_SRCS
+qt4_automoc(${QPlaylisTransfer_SOURCES} ${QPlaylisTransfer_HEADERS_MOC} ${QPlaylisTransfer_RCC_SRCS} ${QPlaylisTransfer_FORMS_HEADERS} ${QPlaylisTransfer_FORMS} ) #don't know what it does but I think it is kind of better when it is there
+add_executable(QPlaylisTransfer ${QPlaylisTransfer_SOURCES} ${QPlaylisTransfer_HEADERS_MOC} ${QPlaylisTransfer_RCC_SRCS} ${QPlaylisTransfer_FORMS_HEADERS} ${QPlaylisTransfer_FORMS} ) #tell cmake to create the executable "project_nam" based on the sources collected in "project_name_SRCS
 target_link_libraries(QPlaylisTransfer ${QT_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_QTXML_LIBRARY} ${QT_QTXMLPATTERNS_LIBRARY}) #link the program with the library with target_link_libraries(/path/to/lib.so)
 #Do always give the full path for all of your .so files

@@ -5,7 +5,8 @@
 #include<QDir>
 #include<QFileInfo>
 #include<QDebug>
-#include<QXmlQuery>
+#include <QtXml>
+//#include<QXmlQuery>
 #include<QXmlStreamReader>
 #include<QUrl>
 #include "copy_playlist_backend.h"

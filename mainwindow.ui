@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>10</y>
-      <width>75</width>
-      <height>23</height>
+      <y>20</y>
+      <width>100</width>
+      <height>40</height>
      </rect>
     </property>
     <property name="text">
@@ -34,9 +34,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>60</y>
-      <width>75</width>
-      <height>23</height>
+      <y>80</y>
+      <width>100</width>
+      <height>40</height>
      </rect>
     </property>
     <property name="text">
@@ -47,9 +47,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>110</y>
-      <width>75</width>
-      <height>23</height>
+      <y>140</y>
+      <width>100</width>
+      <height>40</height>
      </rect>
     </property>
     <property name="text">
@@ -60,9 +60,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>40</y>
+      <y>60</y>
       <width>511</width>
-      <height>16</height>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
@@ -73,9 +73,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>90</y>
+      <y>120</y>
       <width>511</width>
-      <height>16</height>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
@@ -86,9 +86,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>140</y>
-      <width>511</width>
-      <height>16</height>
+      <y>180</y>
+      <width>40</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
@@ -99,7 +99,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>160</y>
+      <y>200</y>
       <width>200</width>
       <height>220</height>
      </rect>
@@ -109,7 +109,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>400</y>
+      <y>430</y>
       <width>410</width>
       <height>23</height>
      </rect>
@@ -121,8 +121,8 @@
    <widget class="QComboBox" name="sync_type_box">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>110</y>
+      <x>220</x>
+      <y>140</y>
       <width>200</width>
       <height>22</height>
      </rect>
@@ -132,7 +132,7 @@
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>160</y>
+      <y>200</y>
       <width>200</width>
       <height>220</height>
      </rect>
@@ -141,10 +141,10 @@
    <widget class="QCheckBox" name="Embed_m3u_box">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>60</y>
+      <x>220</x>
+      <y>80</y>
       <width>120</width>
-      <height>21</height>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
