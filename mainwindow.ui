@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>430</width>
+    <width>494</width>
     <height>500</height>
    </rect>
   </property>
@@ -14,145 +14,166 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="button_playlist">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>20</y>
-      <width>100</width>
-      <height>40</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Playlist</string>
-    </property>
-    <property name="flat">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="button_dir">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>80</y>
-      <width>100</width>
-      <height>40</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Directory</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="button_copy">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>140</y>
-      <width>100</width>
-      <height>40</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Copy</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="playlist_name">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>60</y>
-      <width>511</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="dir_name">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>120</y>
-      <width>511</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="trcknb">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>180</y>
-      <width>40</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="songslistview">
+   <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>200</y>
-      <width>200</width>
-      <height>220</height>
+      <y>10</y>
+      <width>471</width>
+      <height>441</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QProgressBar" name="copy_progressbar">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>430</y>
-      <width>410</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="value">
-     <number>24</number>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="sync_type_box">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>140</y>
-      <width>200</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QListWidget" name="dirlist_view">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>200</y>
-      <width>200</width>
-      <height>220</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="Embed_m3u_box">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>80</y>
-      <width>120</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Embed m3u file ?</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QWidget" name="gather_top" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>400</width>
+         <height>180</height>
+        </size>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QWidget" name="button_column" native="true">
+          <widget class="QLabel" name="playlist_name">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>40</y>
+             <width>511</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="dir_name">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>100</y>
+             <width>400</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="button_playlist">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>100</width>
+             <height>40</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Playlist</string>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="button_copy">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>120</y>
+             <width>100</width>
+             <height>40</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Copy</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="trcknb">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>160</y>
+             <width>40</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="button_dir">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>60</y>
+             <width>100</width>
+             <height>40</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Directory</string>
+           </property>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="parameter_column" native="true">
+          <widget class="QCheckBox" name="Embed_m3u_box">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>60</y>
+             <width>111</width>
+             <height>21</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Embed m3u file ?</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+          <widget class="QComboBox" name="sync_type_box">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>120</y>
+             <width>180</width>
+             <height>22</height>
+            </rect>
+           </property>
+          </widget>
+          <zorder>Embed_m3u_box</zorder>
+          <zorder>sync_type_box</zorder>
+          <zorder>button_column</zorder>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="gather_lists" native="true">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QListWidget" name="songslistview"/>
+        </item>
+        <item>
+         <widget class="QListWidget" name="dirlist_view"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QProgressBar" name="copy_progressbar">
+       <property name="value">
+        <number>24</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -160,7 +181,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>430</width>
+     <width>494</width>
      <height>19</height>
     </rect>
    </property>
@@ -176,6 +197,13 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>songslistview</tabstop>
+  <tabstop>button_copy</tabstop>
+  <tabstop>button_playlist</tabstop>
+  <tabstop>button_dir</tabstop>
+  <tabstop>sync_type_box</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

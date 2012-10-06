@@ -91,9 +91,9 @@ void MainWindow::Loaddir(QString dir_path){
 }
 void MainWindow::Setup_ui(){
     Load_icons();
-    setWindowTitle("QPlaylist Transfer");
+    setWindowTitle("Rainy day");
     setWindowIcon(*ICON);
-    setFixedSize(430,500);
+    //setFixedSize(430,500); //No fixed size anymore
     ui->button_copy->setIcon(*ICON_COPY);
     ui->button_playlist->setIcon(*ICON_PLAYLIST);
     ui->button_dir->setIcon(*ICON_DIR);
@@ -108,6 +108,7 @@ void MainWindow::Setup_ui(){
     ui->sync_type_box->addItem("Flat synchronisation");
     ui->sync_type_box->setFixedWidth(200);
     
+    this->centralWidget()->setLayout(ui->verticalLayout);
 
 }
 void MainWindow::Load_icons(){
