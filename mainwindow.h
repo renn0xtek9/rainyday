@@ -1,6 +1,7 @@
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+#include <QSettings>
 #include <QLabel>
 #include <QMainWindow>
 #include <QString>
@@ -51,6 +52,7 @@ private:
    QFileDialog* FILE_DIALOG_DIR;
    QMessageBox* DIALOG_COPY_ENDED;
    QPushButton* OK_BUTTON;
+   QSettings* SETTINGS;
   //******************************************METHOD
    void Setup_ui();
    void Load_icons();

@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow){    
     ui->setupUi(this);
+    SETTINGS=new QSettings("rainyday","rainyday_qt_ui",this);
     Load_sounds();
     Setup_ui();    
     ERRMSG=new QErrorMessage(this);
@@ -58,7 +59,26 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->button_playlist->setFlat(false);
     }
 MainWindow::~MainWindow(){
+      //TODO save the settings before leaving
+      
+    SETTINGS->setValue("is_Mainwindow_maximized",QVariant::fromValue<bool>(isMaximized()).toString());
+    qDebug()<<"Settings is_Mainwindow_maximized saved as"<<QVariant::fromValue<bool>(isMaximized()).toString();
+      
     delete ui;
+    delete ERRMSG;
+    delete CP_BCK;
+    delete OK_BUTTON;
+    delete DIALOG_COPY_ENDED;
+    delete DEFAULT_DEVICE_DIR;
+    delete DEFAULT_PLAYLIST_DIR;
+    delete FILE_DIALOG_DIR;
+    delete FILE_DIALOG_PLAYLIST;
+    //deleting sound
+    delete CLIC;
+    delete COPYSOUND;
+    
+    
+    delete SETTINGS;
     //TODO DELETE AND DESTRUCT OTHER OBJECT
 
 }
@@ -69,6 +89,7 @@ void MainWindow::Copyplaylist(){           //copy the content of the playlist to
     //TODO add a song for when it's done 
 }
 void MainWindow::Loadplaylist(QString playlist_path){
+  SETTINGS->setValue("last_playlist_dir",FILE_DIALOG_PLAYLIST->directory().path()); //Save the directory where we are for when we re-open the dialog file
   CP_BCK->Load_playlist(playlist_path); 
 }
 void MainWindow::Retrieve_playlist_song(){
@@ -86,6 +107,7 @@ void MainWindow::Sync_type_has_changed(){
   CP_BCK->set_Sync_type(get_Sync_type());
 }
 void MainWindow::Loaddir(QString dir_path){
+  SETTINGS->setValue("last_target_dir",FILE_DIALOG_DIR->directory().path()); //Save the directory where we are for when we re-open the dialog fil
   CP_BCK->set_Device_path(dir_path);
   CP_BCK->Define_new_path();
 }
@@ -93,7 +115,14 @@ void MainWindow::Setup_ui(){
     Load_icons();
     setWindowTitle("Rainy day");
     setWindowIcon(*ICON);
-    //setFixedSize(430,500); //No fixed size anymore
+    //LOAD the Settings
+    qDebug()<<"is maximized? "<<SETTINGS->value("is_Mainwindow_maximized",QVariant::fromValue<bool>(false)).toBool();
+    if (SETTINGS->value("is_Mainwindow_maximized",QVariant::fromValue<bool>(false)).toBool()){ //maximize size of mainwindow
+      showMaximized();
+    }      
+    else{
+     //TODO fix the width
+    }
     ui->button_copy->setIcon(*ICON_COPY);
     ui->button_playlist->setIcon(*ICON_PLAYLIST);
     ui->button_dir->setIcon(*ICON_DIR);
@@ -153,10 +182,12 @@ sync_type MainWindow::get_Sync_type(){
 }
 void MainWindow::Launch_dir_file_dialog(){
   CLIC->play();
+  FILE_DIALOG_DIR->setDirectory(SETTINGS->value("last_target_dir",DEFAULT_DEVICE_DIR->path()).toString());
   FILE_DIALOG_DIR->show();
 }
 void MainWindow::Launch_playlist_file_dialog(){
   CLIC->play(); 
+  FILE_DIALOG_PLAYLIST->setDirectory(SETTINGS->value("last_playlist_dir",DEFAULT_PLAYLIST_DIR->path()).toString());
   FILE_DIALOG_PLAYLIST->show();
 }
 

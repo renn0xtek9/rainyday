@@ -22,8 +22,8 @@ INCLUDE_DIRECTORIES(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR}  ${QT_QTXML_INCLU
 
 
 ### Sources
-SET(Rainyday_SOURCES copy_playlist_backend.cpp main.cpp mainwindow.cpp config_handler.cpp) # collect the sources of the project and call the collected set  "project_name_SRCS"
-SET(Rainyday_HEADERS copy_playlist_backend.h mainwindow.h ui_mainwindow.h config_handler.h)
+SET(Rainyday_SOURCES copy_playlist_backend.cpp main.cpp mainwindow.cpp) # collect the sources of the project and call the collected set  "project_name_SRCS"
+SET(Rainyday_HEADERS copy_playlist_backend.h mainwindow.h ui_mainwindow.h)
 SET(Rainyday_FORMS  mainwindow.ui)
 SET(Rainyday_RCCS playlist_ressource.qrc)
 ### Final part
