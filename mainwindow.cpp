@@ -23,7 +23,13 @@ MainWindow::MainWindow(QWidget *parent) :
     Load_sounds();
     Setup_ui();    
     ERRMSG=new QErrorMessage(this);
-    CP_BCK=new copy_playlist_backend;
+    QString music_mother_dir("/home/max/Music"); // create the string for the path that is the mother directory of all song store on the desktop
+    
+    
+    
+    //TODO define music_root_dir
+    CP_BCK=new copy_playlist_backend(); //cretate the backend
+    CP_BCK->set_Music_root_dir(music_mother_dir); // define the mother directory of all audio files 
     DIALOG_COPY_ENDED=new QMessageBox;
     DIALOG_COPY_ENDED->setWindowIcon(*ICON);
     DIALOG_COPY_ENDED->setIcon(QMessageBox::Information);
@@ -53,10 +59,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(CP_BCK,SIGNAL(A_new_playlist_is_loaded()),this,SLOT(Retrieve_playlist_song()));
     QObject::connect(CP_BCK,SIGNAL(The_dir_is_uptodate()),this,SLOT(Retrieve_new_path()));
     
-    
-    ui->button_copy->setFlat(false);
-    ui->button_dir->setFlat(false);
-    ui->button_playlist->setFlat(false);
     }
 MainWindow::~MainWindow(){
       //TODO save the settings before leaving
@@ -113,7 +115,7 @@ void MainWindow::Loaddir(QString dir_path){
 }
 void MainWindow::Setup_ui(){
     Load_icons();
-    setWindowTitle("Rainy day");
+    setWindowTitle("Rainy day - 1.0 BETA");
     setWindowIcon(*ICON);
     //LOAD the Settings
     qDebug()<<"is maximized? "<<SETTINGS->value("is_Mainwindow_maximized",QVariant::fromValue<bool>(false)).toBool();
