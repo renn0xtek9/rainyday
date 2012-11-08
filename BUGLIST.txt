@@ -1,0 +1,12 @@
+Bug List
+
+Does not seems to overwrite songs when a they are already here. Huge problems if the songs already here are corrupted
+Tracknumber disappeared since the adoption of layouts by the ui
+Most of the error are "No file found in " when a file is not found. It does not indicate the issue ....
+
+
+
+Wish
+Add a bar displaying the available storage amount on the device (How much MB left )
+
+
