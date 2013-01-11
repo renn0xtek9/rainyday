@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Sat Oct 6 21:59:28 2012
+** Created: Thu Nov 8 15:44:31 2012
 **      by: Qt User Interface Compiler version 4.8.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -19,6 +19,7 @@
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
 #include <QtGui/QListWidget>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMenuBar>
@@ -49,6 +50,8 @@ public:
     QWidget *parameter_column;
     QCheckBox *Embed_m3u_box;
     QComboBox *sync_type_box;
+    QLineEdit *lineEdit_music_mother_dir;
+    QLabel *label_music_mother_dir;
     QWidget *gather_lists;
     QHBoxLayout *horizontalLayout_2;
     QListWidget *songslistview;
@@ -108,14 +111,17 @@ public:
         parameter_column->setObjectName(QString::fromUtf8("parameter_column"));
         Embed_m3u_box = new QCheckBox(parameter_column);
         Embed_m3u_box->setObjectName(QString::fromUtf8("Embed_m3u_box"));
-        Embed_m3u_box->setGeometry(QRect(0, 60, 111, 21));
+        Embed_m3u_box->setGeometry(QRect(0, 87, 111, 21));
         Embed_m3u_box->setChecked(true);
         sync_type_box = new QComboBox(parameter_column);
         sync_type_box->setObjectName(QString::fromUtf8("sync_type_box"));
         sync_type_box->setGeometry(QRect(0, 120, 180, 22));
-        Embed_m3u_box->raise();
-        sync_type_box->raise();
-        button_column->raise();
+        lineEdit_music_mother_dir = new QLineEdit(parameter_column);
+        lineEdit_music_mother_dir->setObjectName(QString::fromUtf8("lineEdit_music_mother_dir"));
+        lineEdit_music_mother_dir->setGeometry(QRect(1, 62, 181, 21));
+        label_music_mother_dir = new QLabel(parameter_column);
+        label_music_mother_dir->setObjectName(QString::fromUtf8("label_music_mother_dir"));
+        label_music_mother_dir->setGeometry(QRect(5, 38, 171, 16));
 
         horizontalLayout->addWidget(parameter_column);
 
@@ -178,6 +184,7 @@ public:
         trcknb->setText(QApplication::translate("MainWindow", "TextLabel", 0, QApplication::UnicodeUTF8));
         button_dir->setText(QApplication::translate("MainWindow", "Directory", 0, QApplication::UnicodeUTF8));
         Embed_m3u_box->setText(QApplication::translate("MainWindow", "Embed m3u file ?", 0, QApplication::UnicodeUTF8));
+        label_music_mother_dir->setText(QApplication::translate("MainWindow", "Enter path of mother music dir ", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

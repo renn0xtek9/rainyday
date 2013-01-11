@@ -124,7 +124,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>60</y>
+             <y>87</y>
              <width>111</width>
              <height>21</height>
             </rect>
@@ -146,9 +146,29 @@
             </rect>
            </property>
           </widget>
-          <zorder>Embed_m3u_box</zorder>
-          <zorder>sync_type_box</zorder>
-          <zorder>button_column</zorder>
+          <widget class="QLineEdit" name="lineEdit_music_mother_dir">
+           <property name="geometry">
+            <rect>
+             <x>1</x>
+             <y>62</y>
+             <width>181</width>
+             <height>21</height>
+            </rect>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_music_mother_dir">
+           <property name="geometry">
+            <rect>
+             <x>5</x>
+             <y>38</y>
+             <width>171</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Enter path of mother music dir </string>
+           </property>
+          </widget>
          </widget>
         </item>
        </layout>

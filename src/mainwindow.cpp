@@ -1,5 +1,3 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include <QDebug>
 #include <QLabel>
 #include <QMainWindow>
@@ -9,10 +7,12 @@
 #include <QErrorMessage>
 #include <QSound>
 #include <QMessageBox>
+
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
 #include "copy_playlist_backend.h"
 
-//TODO Add a way to show and edit the DIR_KEEP_ARCH_ROOT using set_Dir_where_data_struct_kept() and get_Dir_where_data_struct_kept() processes
-//TODO Save the last DIR_KEEP_ARCH_ROOT within a config file and load it when the programm is starting
+
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -23,11 +23,17 @@ MainWindow::MainWindow(QWidget *parent) :
     Load_sounds();
     Setup_ui();    
     ERRMSG=new QErrorMessage(this);
-    QString music_mother_dir("/home/max/Music"); // create the string for the path that is the mother directory of all song store on the desktop
+    
+   
+    //TODO Implement a more robust determination of the users Music directory
+    QString music_mother_dir(SETTINGS->value("Music_mother_directory","").toString()); // attempt to lad the Music mother directory of the user from the previous settings
+    if (music_mother_dir.isEmpty()){ //if it fail then define $HOME/Music
+      music_mother_dir=QDir::homePath();
+      music_mother_dir.append("/Music");
+    }    
+    ui->lineEdit_music_mother_dir->setText(music_mother_dir);
     
     
-    
-    //TODO define music_root_dir
     CP_BCK=new copy_playlist_backend(); //cretate the backend
     CP_BCK->set_Music_root_dir(music_mother_dir); // define the mother directory of all audio files 
     DIALOG_COPY_ENDED=new QMessageBox;
@@ -65,6 +71,7 @@ MainWindow::~MainWindow(){
       
     SETTINGS->setValue("is_Mainwindow_maximized",QVariant::fromValue<bool>(isMaximized()).toString());
     qDebug()<<"Settings is_Mainwindow_maximized saved as"<<QVariant::fromValue<bool>(isMaximized()).toString();
+    SETTINGS->setValue("Music_mother_directory",ui->lineEdit_music_mother_dir->text());
       
     delete ui;
     delete ERRMSG;
@@ -91,6 +98,7 @@ void MainWindow::Copyplaylist(){           //copy the content of the playlist to
     //TODO add a song for when it's done 
 }
 void MainWindow::Loadplaylist(QString playlist_path){
+  CP_BCK->set_Music_root_dir(ui->lineEdit_music_mother_dir->text());
   SETTINGS->setValue("last_playlist_dir",FILE_DIALOG_PLAYLIST->directory().path()); //Save the directory where we are for when we re-open the dialog file
   CP_BCK->Load_playlist(playlist_path); 
 }
