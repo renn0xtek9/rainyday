@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=0.9.9
+Encoding=UTF-8
+Name=rainyday
+GenericName=rainyday
+Comment=Rainyday is a helpfull tool to copy audio playlist over a device
+Exec=/usr/bin/rainyday
+Icon=/usr/share/pixmaps/rainyday.png
+Terminal=false
+Type=Application
+Categories=Audio;Utility;
+Name[fr_FR]=rainyday
+Name[en_EN]=rainyday
+Name[de_DE]=rainyday
