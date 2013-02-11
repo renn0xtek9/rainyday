@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEdit_music_mother_dir->setText(music_mother_dir);
     
     
-    CP_BCK=new copy_playlist_backend(); //cretate the backend
+    CP_BCK=new copy_playlist_backend("rainyday_qt_ui"); //cretate the backend
     CP_BCK->set_Music_root_dir(music_mother_dir); // define the mother directory of all audio files 
     DIALOG_COPY_ENDED=new QMessageBox;
     DIALOG_COPY_ENDED->setWindowIcon(*ICON);

@@ -16,7 +16,7 @@ if [ $buildversion == "d" ] ;then
  mkdir -p build 
  cd build 
  rm -r -f *
- cmake .. -DBUILD:STRING=WITH_DEVEL_BACKEND -DPATH_DEVEL_BACKEND_HEAD:STRING=$header_location -DPATH_DEVEL_BACKEND_LIB:STRING=$lib_location
+ cmake .. -DBUILD:STRING=WITH_DEVEL_BACKEND -DPATH_DEVEL_BACKEND_HEAD:STRING=$CPB_DEV_HEADER -DPATH_DEVEL_BACKEND_LIB:STRING=$CPB_DEV_LIB
  make 
 fi 
 if [ $buildversion == "r" ] ;then

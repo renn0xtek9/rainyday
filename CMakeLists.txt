@@ -3,8 +3,8 @@ enable_language(CXX)
 PROJECT(rainyday) 
 
 SET(BUILD "WITH_DEVEL_BACKEND" CACHE STRING "Some user-specified option") # Parameter, to be defined with cmake .. -DBUILD:STRING=WITH_DEVEL_BACKEND
-SET(PATH_DEVEL_BACKEND_LIB "/home/max/Documents/C/Library/lib" CACHE STRING "Some user-specified option") # Path for the development version of the backend lib 
-SET(PATH_DEVEL_BACKEND_HEAD "/home/max/Documents/C/Library/copy_playlist_backend/include" CACHE STRING "Some user-specified option") # Path for the header of the devel version of the backend
+SET(PATH_DEVEL_BACKEND_LIB "/home/max/Documents/C/Library/lib/" CACHE STRING "Some user-specified option") # Path for the development version of the backend lib 
+SET(PATH_DEVEL_BACKEND_HEAD "/home/max/Documents/C/Library/copy_playlist_backend/include/" CACHE STRING "Some user-specified option") # Path for the header of the devel version of the backend
 
 
 ### Version number
@@ -26,15 +26,14 @@ ENDIF(${BUILD} STREQUAL "RELEASE_BACKEND")
 
 # By default: we compile with the latest, developemt version of the copy-playlist backend
 IF(${BUILD} STREQUAL "WITH_DEVEL_BACKEND")
-  SET (CPB_INCLUDE ${PATH_DEVEL_BACKEND_HEAD})
-  INCLUDE_DIRECTORIES(${CPB_INCLUDE} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR}  ${QT_QTXML_INCLUDE_DIR} ${QT_QTXMLPATTERNS_INCLUDE_DIR} include ) 
+  INCLUDE_DIRECTORIES(${PATH_DEVEL_BACKEND_HEAD} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR}  ${QT_QTXML_INCLUDE_DIR} ${QT_QTXMLPATTERNS_INCLUDE_DIR} include ) 
   LINK_DIRECTORIES(${PATH_DEVEL_BACKEND_LIB}) # Directories for the compiled library (.so and .a) added by command: link_directories(/path/to/,sofiles/)
   MESSAGE(STATUS "**************THIS CONFIGURE RAINYDAY WITH A DEVELOPMENT BACKEND")
 ENDIF(${BUILD} STREQUAL "WITH_DEVEL_BACKEND")
 
 ### Directories
-find_library(libcopy_playlist_backend REQUIRED) #find all required librarys (ex here libmy_lib.so would be find and REQUIRED
-
+FIND_LIBRARY(libcopy_playlist_backend ${PATH_DEVEL_BACKEND_LIB} REQUIRED) #find all required librarys (ex here libmy_lib.so would be find and REQUIRED
+MESSAGE (STATUS "${PATH_DEVEL_BACKEND_LIB}")
 
 ### Sources
 SET(rainyday_SOURCES  	src/main.cpp src/mainwindow.cpp) 
@@ -52,9 +51,9 @@ ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 
 
-qt4_automoc(${rainyday_SOURCES} ${rainyday_HEADERS_MOC} ${rainyday_RCC_SRCS} ${rainyday_FORMS_HEADERS} ${rainyday_FORMS} )
-add_executable(rainyday ${rainyday_SOURCES} ${rainyday_HEADERS_MOC} ${rainyday_RCC_SRCS} ${rainyday_FORMS_HEADERS} ${rainyday_FORMS} ) 
-target_link_libraries(rainyday ${QT_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_QTXML_LIBRARY} ${QT_QTXMLPATTERNS_LIBRARY} libcopy_playlist_backend.so)
+QT4_AUTOMOC(${rainyday_SOURCES} ${rainyday_HEADERS_MOC} ${rainyday_RCC_SRCS} ${rainyday_FORMS_HEADERS} ${rainyday_FORMS} )
+ADD_EXECUTABLE(rainyday ${rainyday_SOURCES} ${rainyday_HEADERS_MOC} ${rainyday_RCC_SRCS} ${rainyday_FORMS_HEADERS} ${rainyday_FORMS} ) 
+TARGET_LINK_LIBRARIES(rainyday ${QT_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_QTXML_LIBRARY} ${QT_QTXMLPATTERNS_LIBRARY} /home/max/Documents/C/Library/lib/libcopy_playlist_backend.so)
 
 
 SET_TARGET_PROPERTIES(
@@ -62,6 +61,7 @@ SET_TARGET_PROPERTIES(
   PROPERTIES
   VERSION ${rainyday_VERSION_x}.${rainyday_VERSION_y}.${rainyday_VERSION_z})
 
+###############################INSTALLATION TARGETS
 IF(${BUILD} STREQUAL "RELEASE_BACKEND")
 INSTALL(TARGETS rainyday
   DESTINATION "bin"
