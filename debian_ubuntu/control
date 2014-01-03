@@ -1,0 +1,15 @@
+Source: rainyday
+Section: utils
+Priority: extra
+Maintainer: Maxime <maxime.haselbauer@googlemail.com>
+Build-Depends: debhelper (>= 8.0.0), cmake, libqt4-dev, libqtcore4, libqtgui4, libcopy-playlist-backend, libcopy-playlist-backend-dev
+Standards-Version: 3.9.2
+Homepage: 
+#Vcs-Git: git://git.debian.org/collab-maint/rainyday.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/rainyday.git;a=summary
+
+Package: rainyday
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libqtcore4, libqtgui4, libcopy-playlist-backend
+Description: rainyday helps you to copy over audio playlist
+ <rainyday is a utility software designed to help you copy over audio playlist (.xspf .m3u .wpl ...) onto a device or in a directory. It is especially usefull if your target device does not support Media Transfert Protocol (MTP) like, for instance: usb stick, mp3 walkmans, mobile phones, some smartphones(like Nokia N900 for exemple). You can copy your playlist with several strategies (all files located in the same directory or not. You can also choose to embed a m3u playlist. Especially usefull for the Nokia N900 >

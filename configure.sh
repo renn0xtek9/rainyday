@@ -1,9 +1,13 @@
 #!/bin/bash
-echo -e "\n\nWelcome in this interactive script that helps you compile Rainyday"
-echo -e "Do you want to compile rainyday with a development backend version (in one of your directory) or with a realased backend ? (d/r)"
+cd ui
+uic mainwindow.ui>ui_mainwindow.h 
+cd ..
+echo -e "*****************RAINYDAY COMPILATION SCRIPT*******************************"
+echo -e "\nWelcome in this interactive script that helps you compile Rainyday"
+echo -e "Developpement or release backend (d/r) ?"
 read buildversion
 if [ $buildversion == "d" ] ;then
-    echo -e "Default location of backend header files: \n$CPB_DEV_HEADER\n\nDefault location of backend lib (.so) files:\n$CPB_DEV_LIB\n\nDo you need to change this and use custom path ? yes/no "
+    echo -e "Default location of backend header files: \n$CPB_DEV_HEADER\nDefault location of backend lib (.so) files:\n$CPB_DEV_LIB\nDo you need to change this and use custom path ? yes/no "
     read answer
 	if [ $answer == "yes" ] ;then
 	  echo -e "Location of the header file of the devlopment version of copy_playlist_backend: \nDefault is $CPB_DEV_HEADER ?"

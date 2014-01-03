@@ -1,0 +1,5 @@
+rainyday (1.0.0) precise; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- wotan <maxime.haselbauer@googlemail.com>  Sat, 22 Dec 2012 20:11:34 +0100

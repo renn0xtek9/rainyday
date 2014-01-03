@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 2.6)
 enable_language(CXX)
-PROJECT(rainyday) 
+SET (PROJECT_NAME "rainyday" CACHE STRING "Name of the project")
+PROJECT(${PROJECT_NAME}) 
 
+SET(CMAKE_INSTALL_PREFIX "/usr" CACHE INTERNAL "Prefix prepended to install directories" )
 SET(BUILD "WITH_DEVEL_BACKEND" CACHE STRING "Some user-specified option") # Parameter, to be defined with cmake .. -DBUILD:STRING=WITH_DEVEL_BACKEND
 SET(PATH_DEVEL_BACKEND_LIB "/home/max/Documents/C/Library/lib/" CACHE STRING "Some user-specified option") # Path for the development version of the backend lib 
 SET(PATH_DEVEL_BACKEND_HEAD "/home/max/Documents/C/Library/copy_playlist_backend/include/" CACHE STRING "Some user-specified option") # Path for the header of the devel version of the backend
@@ -9,9 +11,9 @@ SET(PATH_DEVEL_BACKEND_HEAD "/home/max/Documents/C/Library/copy_playlist_backend
 
 ### Version number
 
-SET (rainyday_VERSION_x 0) # The MAJOR version number.
-SET (rainyday_VERSION_y 9) # The MINOR version number
-SET (rainyday_VERSION_z 9) 
+SET (VERSION_x 1) # The MAJOR version number.
+SET (VERSION_y 0) # The MINOR version number
+SET (VERSION_z 0) 
 
 
 FIND_PACKAGE(Qt4  REQUIRED)
@@ -53,16 +55,16 @@ ADD_DEFINITIONS(${QT_DEFINITIONS})
 
 QT4_AUTOMOC(${rainyday_SOURCES} ${rainyday_HEADERS_MOC} ${rainyday_RCC_SRCS} ${rainyday_FORMS_HEADERS} ${rainyday_FORMS} )
 ADD_EXECUTABLE(rainyday ${rainyday_SOURCES} ${rainyday_HEADERS_MOC} ${rainyday_RCC_SRCS} ${rainyday_FORMS_HEADERS} ${rainyday_FORMS} ) 
-TARGET_LINK_LIBRARIES(rainyday ${QT_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_QTXML_LIBRARY} ${QT_QTXMLPATTERNS_LIBRARY} /home/max/Documents/C/Library/lib/libcopy_playlist_backend.so)
+TARGET_LINK_LIBRARIES(rainyday ${QT_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_QTXML_LIBRARY} ${QT_QTXMLPATTERNS_LIBRARY} libcopy-playlist-backend.so)
 
 
 SET_TARGET_PROPERTIES(
   rainyday
   PROPERTIES
-  VERSION ${rainyday_VERSION_x}.${rainyday_VERSION_y}.${rainyday_VERSION_z})
+  VERSION ${VERSION_x}.${VERSION_y}.${VERSION_z})
 
 ###############################INSTALLATION TARGETS
-IF(${BUILD} STREQUAL "RELEASE_BACKEND")
+# IF(${BUILD} STREQUAL "RELEASE_BACKEND")
 INSTALL(TARGETS rainyday
   DESTINATION "bin"
       )
@@ -86,4 +88,4 @@ INSTALL(FILES images/rainyday_64.png
 INSTALL(FILES images/rainyday_64.png
       DESTINATION "share/pixmaps/rainyday"
       )
-ENDIF(${BUILD} STREQUAL "RELEASE_BACKEND")
+# ENDIF(${BUILD} STREQUAL "RELEASE_BACKEND")
